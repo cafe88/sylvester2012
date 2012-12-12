@@ -13,7 +13,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="modes/java/libraries/opengl/library/opengl.jar"/>
 	<classpathentry kind="lib" path="modes/java/libraries/SurfaceMapper/library/jai_core.jar"/>
-	<classpathentry kind="lib" path="modes/java/libraries/SurfaceMapper/library/SurfaceMapper.jar"/>
+	<classpathentry kind="lib" path="modes/java/libraries/SurfaceMapper/library/SurfaceMapper.jar" sourcepath="modes/java/libraries/SurfaceMapper/src"/>
 	<classpathentry kind="lib" path="modes/java/libraries/opengl/jogl-src.zip"/>
 	<classpathentry kind="lib" path="lib/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>

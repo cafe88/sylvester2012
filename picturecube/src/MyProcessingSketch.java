@@ -15,18 +15,18 @@ public class MyProcessingSketch extends PApplet {
 				"MyProcessingSketch" });
 	}
 
-	public void init(){
-        if(frame!=null){
-          frame.removeNotify();//make the frame not displayable
-          frame.setResizable(false);
-          frame.setUndecorated(true);
-          println("frame is at "+frame.getLocation());
-          frame.addNotify();
-        }else
-        	System.out.println("Frame not found!");
-      super.init();
-  }
-	
+	public void init() {
+		if (frame != null) {
+			frame.removeNotify();// make the frame not displayable
+			frame.setResizable(false);
+			frame.setUndecorated(true);
+			println("frame is at " + frame.getLocation());
+			frame.addNotify();
+		} else
+			System.out.println("Frame not found!");
+		super.init();
+	}
+
 	/***********************************************************
 	 * EXAMPLE PROVIDED WITH SURFACEMAPPER LIBRARY DEVELOPED BY * IXAGON AB. *
 	 * This example shows you how to setup the library and * and display single
@@ -39,7 +39,7 @@ public class MyProcessingSketch extends PApplet {
 	SurfaceMapper sm;
 
 	public void setup() {
-		
+
 		Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
 		size(scr.width, scr.height, GLConstants.GLGRAPHICS);
 		glos = new GLGraphicsOffScreen(this, width, height, false);
@@ -63,10 +63,12 @@ public class MyProcessingSketch extends PApplet {
 			sm.render(glos);
 		// render all surfaces in render mode
 		if (sm.getMode() == sm.MODE_RENDER) {
+			
 			for (SuperSurface ss : sm.getSurfaces()) {
 				// render this surface to GLOS, use TEX as texture
 				ss.render(glos, tex);
 			}
+			
 		}
 		// display the GLOS to screen
 		image(glos.getTexture(), 0, 0, width, height);
@@ -87,6 +89,10 @@ public class MyProcessingSketch extends PApplet {
 			for (SuperSurface ss : sm.getSelectedSurfaces()) {
 				ss.increaseResolution();
 			}
+		}
+		// deletes the selected surface
+		if (key == 'd') {
+			sm.removeSelectedSurfaces();
 		}
 		// decrease subdivision of surface
 		if (key == 'o') {
