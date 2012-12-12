@@ -41,7 +41,7 @@ public class MyProcessingSketch extends PApplet {
 	public void setup() {
 		
 		Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
-		size(1000, 800, GLConstants.GLGRAPHICS);
+		size(scr.width, scr.height, GLConstants.GLGRAPHICS);
 		glos = new GLGraphicsOffScreen(this, width, height, false);
 		tex = new GLTexture(this, "img.jpg");
 
