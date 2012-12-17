@@ -1,6 +1,10 @@
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+import javax.media.opengl.GLContext;
 import javax.swing.JApplet;
 
 import processing.core.*;
@@ -10,45 +14,77 @@ import codeanticode.glgraphics.*;
 
 public class MyProcessingSketch extends PApplet {
 
+	String picLocation = "\\\\CLAUDANDUS\\Users\\Cloudstar\\git\\sylvester2012\\picturecube\\src\\testPictures";
+	final int SHOWN_PICTURES = 5;
+	final float PIC_FADE_STEPS = 200;
+
+	ArrayList<LayerBlend> BlendModes; // will be an arraylist of LayerBlends
+
+	GLTexture tex;
+	GLTexture[] shownPictures;
+	float[] fadeSteps;
+	GLTexture[] newPictures;
+	GLTexture[] oldPics;
+	File[] newPicturesFiles;
+	GLGraphicsOffScreen glos;
+	SurfaceMapper sm;
+	PictureChooser picChosser;
+
 	static public void main(String args[]) {
 		PApplet.main(new String[] { "--display=1", "--present",
 				"MyProcessingSketch" });
 	}
 
-	public void init() {
-		if (frame != null) {
-			frame.removeNotify();// make the frame not displayable
-			frame.setResizable(false);
-			frame.setUndecorated(true);
-			println("frame is at " + frame.getLocation());
-			frame.addNotify();
-		} else
-			System.out.println("Frame not found!");
-		super.init();
-	}
-
-	/***********************************************************
-	 * EXAMPLE PROVIDED WITH SURFACEMAPPER LIBRARY DEVELOPED BY * IXAGON AB. *
-	 * This example shows you how to setup the library and * and display single
-	 * texture to multiple surfaces. * Check the keyPressed method to see how to
-	 * access * different settings *
-	 ***********************************************************/
-
-	GLTexture tex;
-	GLGraphicsOffScreen glos;
-	SurfaceMapper sm;
-
 	public void setup() {
-
 		Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
 		size(scr.width, scr.height, GLConstants.GLGRAPHICS);
+
+		BlendModes = new ArrayList<>();
+		BlendModes.add(new LayerBlend(this, "Color", "BlendColor.xml"));
+		BlendModes.add(new LayerBlend(this, "Luminance", "BlendLuminance.xml"));
+		BlendModes.add(new LayerBlend(this, "Multiply", "BlendMultiply.xml"));
+		BlendModes.add(new LayerBlend(this, "Subtract", "BlendSubtract.xml"));
+		BlendModes.add(new LayerBlend(this, "Linear Dodge (Add)",
+				"BlendAdd.xml"));
+		BlendModes
+				.add(new LayerBlend(this, "ColorDodge", "BlendColorDodge.xml"));
+		BlendModes.add(new LayerBlend(this, "ColorBurn", "BlendColorBurn.xml"));
+		BlendModes.add(new LayerBlend(this, "Darken", "BlendDarken.xml"));
+		BlendModes.add(new LayerBlend(this, "Lighten", "BlendLighten.xml"));
+		BlendModes
+				.add(new LayerBlend(this, "Difference", "BlendDifference.xml"));
+		BlendModes.add(new LayerBlend(this, "InverseDifference",
+				"BlendInverseDifference.xml"));
+		BlendModes.add(new LayerBlend(this, "Exclusion", "BlendExclusion.xml"));
+		BlendModes.add(new LayerBlend(this, "Overlay", "BlendOverlay.xml"));
+		BlendModes.add(new LayerBlend(this, "Screen", "BlendScreen.xml"));
+		BlendModes.add(new LayerBlend(this, "HardLight", "BlendHardLight.xml"));
+		BlendModes.add(new LayerBlend(this, "SoftLight", "BlendSoftLight.xml"));
+		BlendModes
+				.add(new LayerBlend(this,
+						"Normal (Unpremultiplied, Photo Mask)",
+						"BlendUnmultiplied.xml"));
+		BlendModes.add(new LayerBlend(this, "Normal (Premultiplied, CG Alpha)",
+				"BlendPremultiplied.xml"));
+
 		glos = new GLGraphicsOffScreen(this, width, height, false);
 		tex = new GLTexture(this, "img.jpg");
 
+		picChosser = new PictureChooser(this, SHOWN_PICTURES, picLocation);
+
+		fadeSteps = new float[SHOWN_PICTURES];
+		oldPics = new GLTexture[SHOWN_PICTURES];
+		newPictures = new GLTexture[SHOWN_PICTURES];
+		newPicturesFiles = new File[SHOWN_PICTURES];
+
+		shownPictures = new GLTexture[SHOWN_PICTURES];
+		for (int i = 0; i < SHOWN_PICTURES; i++)
+			shownPictures[i] = new GLTexture(this, picChosser.getFile(i)
+					.getAbsolutePath());
+
 		// Create new instance of SurfaceMapper
 		sm = new SurfaceMapper(this, width, height);
-		// Creates one surface with subdivision 3, at center of screen
-		sm.createQuadSurface(3, width / 2, height / 2);
+
 	}
 
 	public void draw() {
@@ -58,17 +94,48 @@ public class MyProcessingSketch extends PApplet {
 		glos.endDraw();
 		// Updates the shaking of the surfaces in render mode
 		sm.shake();
+
 		// render all surfaces in calibration mode
 		if (sm.getMode() == sm.MODE_CALIBRATE)
 			sm.render(glos);
 		// render all surfaces in render mode
 		if (sm.getMode() == sm.MODE_RENDER) {
-			
+
+			int i = 0;
 			for (SuperSurface ss : sm.getSurfaces()) {
-				// render this surface to GLOS, use TEX as texture
-				ss.render(glos, tex);
-			}
+				if(newPicturesFiles[i]!=null && newPictures[i]==null){
+					newPictures[i] = new GLTexture(this,newPicturesFiles[i].getAbsolutePath());
+					newPicturesFiles[i]= null;
+				}
+				// fading and changing
+				if (newPictures[i] != null) {
+					System.out.println(BlendModes.get(16).name);
+					if(fadeSteps[i] % 20 != 0){
+						ss.render(glos, shownPictures[i]);
+						fadeSteps[i]--;
+						continue;
+					}
+					System.out.println("fading with! "+ (float) (fadeSteps[i] / PIC_FADE_STEPS));
+					BlendModes.get(16).filter.setParameterValue("Opacity",
+							(float) (fadeSteps[i] / PIC_FADE_STEPS));
+				
+						
+					BlendModes.get(16).apply( newPictures[i],oldPics[i],
+								shownPictures[i]);
+						
+						if (fadeSteps[i] == 0) {
+							newPictures[i] = null;
+							oldPics[i] = null;
+							fadeSteps[i] = (float)PIC_FADE_STEPS;
+						} else
+							fadeSteps[i]--;
 			
+				}
+				ss.render(glos, shownPictures[i]);
+				// picChosser.randomizeFile().getAbsolutePath()));
+				i++;
+			}
+
 		}
 		// display the GLOS to screen
 		image(glos.getTexture(), 0, 0, width, height);
@@ -141,6 +208,65 @@ public class MyProcessingSketch extends PApplet {
 			for (SuperSurface ss : sm.getSelectedSurfaces()) {
 				ss.decreaseVerticalForce();
 			}
+		}
+	}
+
+	public void switchPicture(int i, File file) {
+		synchronized (this) {
+			newPicturesFiles[i] = file;
+			oldPics[i] = shownPictures[i];
+		}
+	}
+
+	public void fadePictures() {
+
+		float[] fadeSteps = new float[SHOWN_PICTURES];
+		System.out.println("thread is running and shit!");
+		Arrays.fill(fadeSteps, PIC_FADE_STEPS);
+		while (true) {
+			for (int i = 0; i < SHOWN_PICTURES; i++) {
+				if (newPictures[i] != null) {
+					System.out.println("fade-the bitch!! on: " + i);
+					BlendModes.get(16).filter.setParameterValue("Opacity",
+							(float) (fadeSteps[i] / SHOWN_PICTURES));
+					synchronized (this) {
+						BlendModes.get(16).apply(oldPics[i], newPictures[i],
+								shownPictures[i]);
+					}
+					if (fadeSteps[i] == 0) {
+						newPictures[i] = null;
+						oldPics[i] = null;
+						fadeSteps[i] = PIC_FADE_STEPS;
+					} else
+						fadeSteps[i]--;
+				}
+			}
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e) {
+				return;
+			}
+
+		}
+	}
+
+	class LayerBlend {
+		String name;
+		GLTextureFilter filter;
+
+		LayerBlend(PApplet Parent, String Name, String XmlFile) {
+			name = Name;
+			filter = new GLTextureFilter(Parent, XmlFile);
+		}
+
+		void apply(GLTexture bottomLayer, GLTexture topLayer,
+				GLTexture resultLayer) {
+			filter.apply(new GLTexture[] { bottomLayer, topLayer }, resultLayer); // all
+																					// are
+																					// called
+																					// the
+																					// same
+																					// way
 		}
 	}
 
