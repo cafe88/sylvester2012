@@ -45,18 +45,25 @@ public class PictureChooser implements Runnable {
 			showList[i] = random;
 		}
 
-		Thread thisThread = new Thread(this);
-		thisThread.start();
+	
 	}
 /**
  * should maybe check if we already have one picture in the show array
  * @return
  */
+	public void runChooser(){
+		Thread thisThread = new Thread(this);
+		thisThread.start();
+	}
 	public File randomizeFile() {
 		int i = (int) (Math.random() * files.size());
 		return files.get(i);
 	}
 
+	public ArrayList<File> getFileList(){
+		return files;
+	}
+	
 	public File getFile(int i) {
 		synchronized (this) {
 			return showList[i];

@@ -3,6 +3,7 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.media.opengl.GLContext;
 import javax.swing.JApplet;
@@ -16,19 +17,17 @@ public class MyProcessingSketch extends PApplet {
 
 	String picLocation = "\\\\CLAUDANDUS\\Users\\Cloudstar\\git\\sylvester2012\\picturecube\\src\\testPictures";
 	final int SHOWN_PICTURES = 5;
-	final float PIC_FADE_STEPS = 200;
 
 	ArrayList<LayerBlend> BlendModes; // will be an arraylist of LayerBlends
 
-	GLTexture tex;
-	GLTexture[] shownPictures;
-	float[] fadeSteps;
-	GLTexture[] newPictures;
-	GLTexture[] oldPics;
+	HashMap<File, GLTexture> fileTextures;
+	TextureSurface[] shownTextures;
+
 	File[] newPicturesFiles;
 	GLGraphicsOffScreen glos;
 	SurfaceMapper sm;
 	PictureChooser picChosser;
+	private boolean newPicTure = false;
 
 	static public void main(String args[]) {
 		PApplet.main(new String[] { "--display=1", "--present",
@@ -68,22 +67,30 @@ public class MyProcessingSketch extends PApplet {
 				"BlendPremultiplied.xml"));
 
 		glos = new GLGraphicsOffScreen(this, width, height, false);
-		tex = new GLTexture(this, "img.jpg");
 
 		picChosser = new PictureChooser(this, SHOWN_PICTURES, picLocation);
 
-		fadeSteps = new float[SHOWN_PICTURES];
-		oldPics = new GLTexture[SHOWN_PICTURES];
-		newPictures = new GLTexture[SHOWN_PICTURES];
+		fileTextures = new HashMap<>();
+		ArrayList<File> files = picChosser.getFileList();
+		for (File file : files) {
+			fileTextures.put(file, new GLTexture(this, file.getAbsolutePath()));
+		}
+
+		shownTextures = new TextureSurface[SHOWN_PICTURES];
+
+		for (int i = 0; i < shownTextures.length; i++) {
+			String filePath = picChosser.randomizeFile().getAbsolutePath();
+			shownTextures[i] = new TextureSurface(
+					new GLTexture(this, filePath),
+					new GLTexture(this, filePath),
+					new GLTexture(this, filePath), BlendModes.get(16));
+		}
+
 		newPicturesFiles = new File[SHOWN_PICTURES];
-
-		shownPictures = new GLTexture[SHOWN_PICTURES];
-		for (int i = 0; i < SHOWN_PICTURES; i++)
-			shownPictures[i] = new GLTexture(this, picChosser.getFile(i)
-					.getAbsolutePath());
-
 		// Create new instance of SurfaceMapper
 		sm = new SurfaceMapper(this, width, height);
+
+		picChosser.runChooser();
 
 	}
 
@@ -103,35 +110,10 @@ public class MyProcessingSketch extends PApplet {
 
 			int i = 0;
 			for (SuperSurface ss : sm.getSurfaces()) {
-				if(newPicturesFiles[i]!=null && newPictures[i]==null){
-					newPictures[i] = new GLTexture(this,newPicturesFiles[i].getAbsolutePath());
-					newPicturesFiles[i]= null;
-				}
-				// fading and changing
-				if (newPictures[i] != null) {
-					System.out.println(BlendModes.get(16).name);
-					if(fadeSteps[i] % 20 != 0){
-						ss.render(glos, shownPictures[i]);
-						fadeSteps[i]--;
-						continue;
-					}
-					System.out.println("fading with! "+ (float) (fadeSteps[i] / PIC_FADE_STEPS));
-					BlendModes.get(16).filter.setParameterValue("Opacity",
-							(float) (fadeSteps[i] / PIC_FADE_STEPS));
-				
-						
-					BlendModes.get(16).apply( newPictures[i],oldPics[i],
-								shownPictures[i]);
-						
-						if (fadeSteps[i] == 0) {
-							newPictures[i] = null;
-							oldPics[i] = null;
-							fadeSteps[i] = (float)PIC_FADE_STEPS;
-						} else
-							fadeSteps[i]--;
-			
-				}
-				ss.render(glos, shownPictures[i]);
+				updateTextures();
+				shownTextures[i].draw();
+				ss.render(glos, shownTextures[i].getTexture());
+
 				// picChosser.randomizeFile().getAbsolutePath()));
 				i++;
 			}
@@ -139,6 +121,29 @@ public class MyProcessingSketch extends PApplet {
 		}
 		// display the GLOS to screen
 		image(glos.getTexture(), 0, 0, width, height);
+	}
+
+	private void updateTextures() {
+		if (!newPicTure)
+			return;
+		synchronized (newPicturesFiles) {
+			int i = 0;
+			for (File file : newPicturesFiles) {
+				if (file != null) {
+					if (fileTextures.get(file) == null) {
+						fileTextures.put(file,
+								new GLTexture(this, file.getAbsolutePath()));
+					}
+					shownTextures[i].setOldTexture(shownTextures[i]
+							.getOrginTexture());
+					shownTextures[i].setOrginTexture(fileTextures.get(file));
+					shownTextures[i].resetCounter();
+					newPicturesFiles[i] = null;
+				}
+				i++;
+			}
+			newPicTure = false;
+		}
 	}
 
 	public void keyPressed() {
@@ -212,62 +217,9 @@ public class MyProcessingSketch extends PApplet {
 	}
 
 	public void switchPicture(int i, File file) {
-		synchronized (this) {
+		synchronized (newPicturesFiles) {
 			newPicturesFiles[i] = file;
-			oldPics[i] = shownPictures[i];
+			newPicTure = true;
 		}
 	}
-
-	public void fadePictures() {
-
-		float[] fadeSteps = new float[SHOWN_PICTURES];
-		System.out.println("thread is running and shit!");
-		Arrays.fill(fadeSteps, PIC_FADE_STEPS);
-		while (true) {
-			for (int i = 0; i < SHOWN_PICTURES; i++) {
-				if (newPictures[i] != null) {
-					System.out.println("fade-the bitch!! on: " + i);
-					BlendModes.get(16).filter.setParameterValue("Opacity",
-							(float) (fadeSteps[i] / SHOWN_PICTURES));
-					synchronized (this) {
-						BlendModes.get(16).apply(oldPics[i], newPictures[i],
-								shownPictures[i]);
-					}
-					if (fadeSteps[i] == 0) {
-						newPictures[i] = null;
-						oldPics[i] = null;
-						fadeSteps[i] = PIC_FADE_STEPS;
-					} else
-						fadeSteps[i]--;
-				}
-			}
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				return;
-			}
-
-		}
-	}
-
-	class LayerBlend {
-		String name;
-		GLTextureFilter filter;
-
-		LayerBlend(PApplet Parent, String Name, String XmlFile) {
-			name = Name;
-			filter = new GLTextureFilter(Parent, XmlFile);
-		}
-
-		void apply(GLTexture bottomLayer, GLTexture topLayer,
-				GLTexture resultLayer) {
-			filter.apply(new GLTexture[] { bottomLayer, topLayer }, resultLayer); // all
-																					// are
-																					// called
-																					// the
-																					// same
-																					// way
-		}
-	}
-
 }
