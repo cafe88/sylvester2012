@@ -20,7 +20,7 @@ public class MyProcessingSketch extends PApplet {
 
 	ArrayList<LayerBlend> BlendModes; // will be an arraylist of LayerBlends
 
-	HashMap<File, GLTexture> fileTextures;
+	
 	TextureSurface[] shownTextures;
 
 	File[] newPicturesFiles;
@@ -70,11 +70,7 @@ public class MyProcessingSketch extends PApplet {
 
 		picChosser = new PictureChooser(this, SHOWN_PICTURES, picLocation);
 
-		fileTextures = new HashMap<>();
-		ArrayList<File> files = picChosser.getFileList();
-		for (File file : files) {
-			fileTextures.put(file, new GLTexture(this, file.getAbsolutePath()));
-		}
+		
 
 		shownTextures = new TextureSurface[SHOWN_PICTURES];
 
@@ -130,13 +126,9 @@ public class MyProcessingSketch extends PApplet {
 			int i = 0;
 			for (File file : newPicturesFiles) {
 				if (file != null) {
-					if (fileTextures.get(file) == null) {
-						fileTextures.put(file,
-								new GLTexture(this, file.getAbsolutePath()));
-					}
 					shownTextures[i].setOldTexture(shownTextures[i]
 							.getOrginTexture());
-					shownTextures[i].setOrginTexture(fileTextures.get(file));
+					shownTextures[i].setOrginTexture(new GLTexture(this, file.getAbsolutePath()));
 					shownTextures[i].resetCounter();
 					newPicturesFiles[i] = null;
 				}

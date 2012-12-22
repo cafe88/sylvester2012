@@ -54,6 +54,8 @@ public class PictureChooser implements Runnable {
 	public void runChooser(){
 		Thread thisThread = new Thread(this);
 		thisThread.start();
+		Thread newFilesThread = new Thread(filelList);
+		newFilesThread.start();
 	}
 	public File randomizeFile() {
 		int i = (int) (Math.random() * files.size());
@@ -84,7 +86,6 @@ public class PictureChooser implements Runnable {
 		Arrays.fill(shownOnScreen, System.currentTimeMillis());
 
 		while (true) {
-			System.out.println("picChooser-loop!!");
 			for (int i = 0; i < picCount; i++) {
 				// grep new image if the current image is longer on the screen
 				// the show time
@@ -104,7 +105,7 @@ public class PictureChooser implements Runnable {
 						// shit
 					} else {
 						File random = randomizeFile();
-						System.out.println("new File " + random.getName());
+						//System.out.println("new File " + random.getName());
 						synchronized (this) {
 							switchPictures(i, random);
 						}

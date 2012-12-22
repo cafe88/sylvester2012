@@ -46,17 +46,17 @@ public class UpdateFilelist implements Runnable {
 			this.location = new File(location);
 			if (!this.location.exists())
 				System.out.println("location does not exist");
-				if(!this.location.canRead())
-					System.out.println("can not read from location");
-				
+			if (!this.location.canRead())
+				System.out.println("can not read from location");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new FileNotFoundException("Can not load the location!");
 		}
 		// add all Files which are at the start of the application in location
 		System.out.println(location);
-		for(File file:this.location.listFiles()){
-			if(file.getName().endsWith(".JPG")){
+		for (File file : this.location.listFiles()) {
+			if (file.getName().endsWith(".JPG")) {
 				System.out.println(file);
 				files.add(file);
 			}
@@ -77,17 +77,23 @@ public class UpdateFilelist implements Runnable {
  */
 	public void run() {
 
-		File[] fileList = location.listFiles();
 		// synch filelist with this as Lock object
 		// all operations on the arraylists should sync with this object
-		while (true)
-				for (File foundFile : fileList) {
-					// if the file is not in the filelist we add them to newFie
-					if (!files.contains(foundFile) &&
-							foundFile.getName().endsWith(".JPG"))
-						synchronized (this) {
+		while (true) {
+			File[] fileList = location.listFiles();
+			System.out.println("checking filesystem:");
+			for (File file : fileList) {
+				System.out.println(file);
+			}
+			for (File foundFile : fileList) {
+				// if the file is not in the filelist we add them to newFie
+				if (!files.contains(foundFile)
+						&& foundFile.getName().endsWith(".JPG"))
+					synchronized (this) {
+						System.out
+								.println("------------------Found a new Picture-------------------");
 						newFiles.add(foundFile);
-				}
+					}
 				//
 				try {
 					Thread.sleep(SLEEP_CYCLE);
@@ -96,6 +102,7 @@ public class UpdateFilelist implements Runnable {
 					return;
 				}
 			}
+		}
 	}
 
 }
