@@ -17,13 +17,12 @@ public class MyProcessingSketch extends PApplet {
 
 	//String picLocation = "\\\\CLAUDANDUS\\Users\\Cloudstar\\git\\sylvester2012\\picturecube\\src\\testPictures";
 	String picLocation = "src\\testPictures";
-	final int SHOWN_PICTURES = 5;
+	final int SHOWN_PICTURES = 3;
 
 	ArrayList<LayerBlend> BlendModes; // will be an arraylist of LayerBlends
-
 	
 	TextureSurface[] shownTextures;
-
+	
 	File[] newPicturesFiles;
 	GLGraphicsOffScreen glos;
 	SurfaceMapper sm;
@@ -74,13 +73,13 @@ public class MyProcessingSketch extends PApplet {
 		picChosser = new PictureChooser(this, SHOWN_PICTURES, picLocation);
 
 		shownTextures = new TextureSurface[SHOWN_PICTURES];
-
+		
 		for (int i = 0; i < shownTextures.length; i++) {
 			String filePath = picChosser.randomizeFile().getAbsolutePath();
 			shownTextures[i] = new TextureSurface(this, 
 					new GLTexture(this, filePath),
 					new GLTexture(this, filePath),
-					new GLTexture(this, filePath), BlendModes.get(16));
+					new GLTexture(this), BlendModes.get(16));
 		}
 
 		newPicturesFiles = new File[SHOWN_PICTURES];
@@ -108,6 +107,7 @@ public class MyProcessingSketch extends PApplet {
 			int i = 0;
 			for (SuperSurface ss : sm.getSurfaces()) {
 				updateTextures();
+				shownTextures[i].setSS(ss);
 				shownTextures[i].draw();
 				ss.render(glos, shownTextures[i].getTexture());
 
@@ -117,7 +117,8 @@ public class MyProcessingSketch extends PApplet {
 
 		}
 		// display the GLOS to screen
-		image(glos.getTexture(), 0, 0, width, height);
+		//image(glos.getTexture(), 0, 0, width, height);
+		glos.getTexture().render(0, 0, width, height);
 	}
 
 	private void updateTextures() {
@@ -127,10 +128,12 @@ public class MyProcessingSketch extends PApplet {
 			int i = 0;
 			for (File file : newPicturesFiles) {
 				if (file != null) {
-					shownTextures[i].setOldTexture(shownTextures[i]
-							.getOrginTexture());
-					shownTextures[i].setOrginTexture(new GLTexture(this, file.getAbsolutePath()));
-					shownTextures[i].resetCounter();
+//					shownTextures[i].setOldTexture(shownTextures[i]
+//							.getOrginTexture());
+//					shownTextures[i].setOrginTexture(new GLTexture(this, file.getAbsolutePath()));
+//					shownTextures[i].resetCounter();
+					PictureSwitcher pswitch = new PictureSwitcher(this, shownTextures[i], file.getAbsolutePath());
+					new Thread(pswitch).start();
 					newPicturesFiles[i] = null;
 				}
 				i++;
