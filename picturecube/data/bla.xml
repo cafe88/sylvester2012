@@ -1,32 +1,8 @@
 <ProjectionMap>
-  <surface type="0" id="0" name="0" res="5" lock="false" horizontalForce="0" verticalForce="0">
-    <cornerpoint i="0" x="473.0" y="583.0"/>
-    <cornerpoint i="1" x="651.0" y="545.0"/>
-    <cornerpoint i="2" x="836.0" y="598.0"/>
-    <cornerpoint i="3" x="667.0" y="650.0"/>
-  </surface>
-  <surface type="0" id="1" name="1" res="5" lock="false" horizontalForce="0" verticalForce="0">
-    <cornerpoint i="0" x="667.0" y="650.0"/>
-    <cornerpoint i="1" x="836.0" y="598.0"/>
-    <cornerpoint i="2" x="835.0" y="815.0"/>
-    <cornerpoint i="3" x="672.0" y="900.0"/>
-  </surface>
-  <surface type="0" id="2" name="2" res="7" lock="false" horizontalForce="0" verticalForce="0">
-    <cornerpoint i="0" x="1092.0" y="367.0"/>
-    <cornerpoint i="1" x="1400.0" y="360.0"/>
-    <cornerpoint i="2" x="1326.0" y="613.0"/>
-    <cornerpoint i="3" x="1226.0" y="613.0"/>
-  </surface>
-  <surface type="0" id="3" name="3" res="5" lock="false" horizontalForce="0" verticalForce="0">
-    <cornerpoint i="0" x="476.0" y="585.0"/>
-    <cornerpoint i="1" x="670.0" y="652.0"/>
-    <cornerpoint i="2" x="675.0" y="902.0"/>
-    <cornerpoint i="3" x="472.0" y="811.0"/>
-  </surface>
-  <surface type="0" id="4" name="4" res="6" lock="false" horizontalForce="0" verticalForce="0">
-    <cornerpoint i="0" x="217.0" y="158.0"/>
-    <cornerpoint i="1" x="317.0" y="158.0"/>
-    <cornerpoint i="2" x="693.0" y="414.0"/>
-    <cornerpoint i="3" x="87.0" y="550.0"/>
+  <surface type="0" id="0" name="0" res="3" lock="false" horizontalForce="0" verticalForce="0">
+    <cornerpoint i="0" x="595.0" y="332.0"/>
+    <cornerpoint i="1" x="1143.0" y="335.0"/>
+    <cornerpoint i="2" x="1150.0" y="541.0"/>
+    <cornerpoint i="3" x="592.0" y="524.0"/>
   </surface>
 </ProjectionMap>
