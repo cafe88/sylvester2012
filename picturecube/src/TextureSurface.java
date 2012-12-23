@@ -54,8 +54,12 @@ public class TextureSurface {
 					//System.out.println("its fading!!");
 					float f = (float) (drawCounter / drawCounterSteps / fadeSteps);
 					filter.filter.setParameterValue("Opacity", f);
+					
+					//CROPPING
 					int sy = (int)((shownTexture.height - 600) * f);
 					filter.filter.setCrop(0, sy, shownTexture.width, 600);
+					
+					
 					//System.out.println(f);
 					// filter.filter.setParameterValue("Opacity", 0.4f);
 					filter.apply(oldTexture, orginTexture, shownTexture);
@@ -70,22 +74,6 @@ public class TextureSurface {
 		return shownTexture;
 	}
 	
-	private GLTexture crop(GLTexture src, int x, int y, int w, int h) {
-		GLGraphicsOffScreen offscreen = new GLGraphicsOffScreen(parent, src.width, src.height);
-		
-		offscreen.beginDraw();
-		offscreen.beginShape(parent.QUADS);
-		offscreen.texture(src);
-		offscreen.vertex(0, 0, x, y);
-		offscreen.vertex(offscreen.width, 0, x + w, y);  
-		offscreen.vertex(offscreen.width, offscreen.height, x + w, y + h);  
-		offscreen.vertex(0, offscreen.height, x, y + h);    
-		offscreen.endShape();
-		offscreen.endDraw();  
-		
-		return offscreen.getTexture();
-	}
-
 	public void setOldTexture(GLTexture oldTexture) {
 		this.oldTexture = oldTexture;
 	}
