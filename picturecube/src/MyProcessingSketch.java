@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -26,7 +27,7 @@ public class MyProcessingSketch extends PApplet {
 	SurfaceMapper sm;
 
 	// starts in rendermode
-	final boolean startImediatly = false;
+	final boolean startImediatly = true;
 
 	// index of Pictures
 	final int[] pictureSurfaces = { 0, 1, 2 };
@@ -35,14 +36,14 @@ public class MyProcessingSketch extends PApplet {
 	// --------------------------MetaBall--------------------
 	final int EFFECT_INDEX_METABALL = 3;
 	GLTexture metaBallTex;
-	final int numBlobs = 3;
+	final int numBlobs = 5;
 
-	int[] blogPx = { 0, 90, 90 };
-	int[] blogPy = { 0, 120, 45 };
+	int[] blogPx;
+	int[] blogPy;
 
 	// Movement vector for each blob
-	int[] blogDx = { 1, 1, 1 };
-	int[] blogDy = { 1, 1, 1 };
+	int[] blogDx;
+	int[] blogDy;
 
 	PGraphics pgMetaBall;
 	int[][] vy, vx;
@@ -120,6 +121,20 @@ public class MyProcessingSketch extends PApplet {
 		// ----MetaBall-------
 		metaBallTex = new GLTexture(this);
 		pgMetaBall = createGraphics(160, 90, P2D);
+		//blob position
+		blogPx  = new int[numBlobs];
+		blogPy  = new int[numBlobs];
+		//movement vector
+		blogDx = new int[numBlobs];
+		blogDy  = new int[numBlobs];
+		Random r = new Random();
+		for(int i=0; i<numBlobs;i++){
+			blogDx[i]=1;
+			blogDy[i]=1;
+			blogPx[i] = (int)(r.nextDouble()*pgMetaBall.width);
+			blogPy[i] = (int)(r.nextDouble()*pgMetaBall.height);
+		}
+		
 		vy = new int[numBlobs][pgMetaBall.height];
 		vx = new int[numBlobs][pgMetaBall.width];
 		// ----MetaBall--------
@@ -292,10 +307,10 @@ public class MyProcessingSketch extends PApplet {
 		pgMetaBall.loadPixels();
 		for (int y = 0; y < pgMetaBall.height; y++) {
 			for (int x = 0; x < pgMetaBall.width; x++) {
-				int m = 1;
+				int m = 30;
 				for (int i = 0; i < numBlobs; i++) {
 					// Increase this number to make your blobs bigger
-					m += 40000 / (vy[i][y] + vx[i][x] + 1);
+					m += 10000 / (vy[i][y] + vx[i][x] + 1);
 				}
 				pgMetaBall.pixels[x + y * pgMetaBall.width] = color(0, m + x,
 						(x + m + y) / 2);

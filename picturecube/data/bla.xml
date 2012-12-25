@@ -5,16 +5,22 @@
     <cornerpoint i="2" x="866.0" y="624.0"/>
     <cornerpoint i="3" x="308.0" y="607.0"/>
   </surface>
-  <surface type="0" id="0" name="0" res="3" lock="false" horizontalForce="0" verticalForce="0">
+  <surface type="0" id="1" name="0" res="3" lock="false" horizontalForce="0" verticalForce="0">
     <cornerpoint i="0" x="1138.0" y="300.0"/>
     <cornerpoint i="1" x="1316.0" y="301.0"/>
     <cornerpoint i="2" x="1332.0" y="813.0"/>
     <cornerpoint i="3" x="1142.0" y="802.0"/>
   </surface>
-  <surface type="0" id="0" name="0" res="3" lock="false" horizontalForce="0" verticalForce="0">
+  <surface type="0" id="2" name="0" res="3" lock="false" horizontalForce="0" verticalForce="0">
     <cornerpoint i="0" x="1592.0" y="474.0"/>
     <cornerpoint i="1" x="1692.0" y="474.0"/>
     <cornerpoint i="2" x="1692.0" y="574.0"/>
     <cornerpoint i="3" x="1592.0" y="574.0"/>
+  </surface>
+  <surface type="0" id="3" name="2" res="5" lock="false" horizontalForce="0" verticalForce="0">
+    <cornerpoint i="0" x="416.0" y="107.0"/>
+    <cornerpoint i="1" x="773.0" y="92.0"/>
+    <cornerpoint i="2" x="829.0" y="379.0"/>
+    <cornerpoint i="3" x="422.0" y="360.0"/>
   </surface>
 </ProjectionMap>
