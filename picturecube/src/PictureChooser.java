@@ -16,7 +16,7 @@ public class PictureChooser implements Runnable {
 	UpdateFilelist filelList;
 	MyProcessingSketch parent;
 	int picCount;
-	final long PIC_SHOW_TIME = 5000;
+	public static final long PIC_SHOW_TIME = 10000;
 	final long PIC_FADE_TIME = 2000;
 	final long SLEEP_TIME = 1000;
 
@@ -89,7 +89,7 @@ public class PictureChooser implements Runnable {
 			for (int i = 0; i < picCount; i++) {
 				// grep new image if the current image is longer on the screen
 				// the show time
-				if (System.currentTimeMillis() - shownOnScreen[i] > PIC_SHOW_TIME) {
+				if (System.currentTimeMillis() - shownOnScreen[i] > (PIC_SHOW_TIME + (Math.random() * (PIC_SHOW_TIME)))) {
 
 					// first check if we got new shit rolling and show it
 					boolean isEmpty = filelList.getNewFiles().isEmpty();
@@ -120,5 +120,4 @@ public class PictureChooser implements Runnable {
 			}
 		}
 	}
-
 }
