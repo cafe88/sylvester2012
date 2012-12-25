@@ -1,17 +1,16 @@
+import ixagon.SurfaceMapper.SuperSurface;
+import ixagon.SurfaceMapper.SurfaceMapper;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 
-import javax.media.opengl.GLContext;
-import javax.swing.JApplet;
-
-import processing.core.*;
-import ixagon.SurfaceMapper.*;
-import processing.opengl.*;
-import codeanticode.glgraphics.*;
+import processing.core.PApplet;
+import processing.core.PGraphics;
+import codeanticode.glgraphics.GLConstants;
+import codeanticode.glgraphics.GLGraphicsOffScreen;
+import codeanticode.glgraphics.GLTexture;
 
 public class MyProcessingSketch extends PApplet {
 
@@ -35,7 +34,6 @@ public class MyProcessingSketch extends PApplet {
 	// effectextures
 	// --------------------------MetaBall--------------------
 	final int EFFECT_INDEX_METABALL = 3;
-	PGraphics metaBall;
 	GLTexture metaBallTex;
 	final int numBlobs = 3;
 
@@ -120,7 +118,6 @@ public class MyProcessingSketch extends PApplet {
 		// PGraphics wich will be used for effects
 
 		// ----MetaBall-------
-		metaBall = createGraphics(400, 400, P2D);
 		metaBallTex = new GLTexture(this);
 		pgMetaBall = createGraphics(160, 90, P2D);
 		vy = new int[numBlobs][pgMetaBall.height];
