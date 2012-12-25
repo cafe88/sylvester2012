@@ -24,6 +24,8 @@ public class MyProcessingSketch extends PApplet {
 	TextureSurface[] shownTextures;
 
 	File[] newPicturesFiles;
+	GLTexture bouncingBalls;
+	
 	GLGraphicsOffScreen glos;
 	SurfaceMapper sm;
 	PictureChooser picChosser;
@@ -82,6 +84,8 @@ public class MyProcessingSketch extends PApplet {
 					new GLTexture(this, filePath), BlendModes.get(16));
 		}
 
+		bouncingBalls = new GLTexture(this, 640	, 360);
+		
 		newPicturesFiles = new File[SHOWN_PICTURES];
 		// Create new instance of SurfaceMapper
 		sm = new SurfaceMapper(this, width, height);
@@ -106,6 +110,16 @@ public class MyProcessingSketch extends PApplet {
 
 			int i = 0;
 			for (SuperSurface ss : sm.getSurfaces()) {
+				if(i==0){
+					bouncingBalls.
+					
+					ss.render(glos,bouncingBalls);
+					i++;
+					continue;
+				}
+				
+				
+				
 				updateTextures();
 				shownTextures[i].draw();
 				ss.render(glos, shownTextures[i].getTexture());
