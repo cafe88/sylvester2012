@@ -81,9 +81,9 @@ public class UpdateFilelist implements Runnable {
 		// all operations on the arraylists should sync with this object
 		while (true) {
 			File[] fileList = location.listFiles();
-			System.out.println("checking filesystem:");
+			//System.out.println("checking filesystem:");
 			for (File file : fileList) {
-				System.out.println(file);
+				//System.out.println(file);
 			}
 			for (File foundFile : fileList) {
 				// if the file is not in the filelist we add them to newFie

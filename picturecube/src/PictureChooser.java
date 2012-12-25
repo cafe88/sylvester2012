@@ -16,7 +16,7 @@ public class PictureChooser implements Runnable {
 	UpdateFilelist filelList;
 	MyProcessingSketch parent;
 	int picCount;
-	public static final long PIC_SHOW_TIME = 10000;
+	public static final long PIC_SHOW_TIME = 5000;
 	final long PIC_FADE_TIME = 2000;
 	final long SLEEP_TIME = 1000;
 
