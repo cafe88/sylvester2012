@@ -29,10 +29,10 @@ public class MyProcessingSketch extends PApplet {
 	// starts in rendermode
 	final boolean startImediatly = true;
 
-	// index of Pictures
-	final int[] pictureSurfaces = { 0, 1, 2 };
+	// index of the surfaces where we want to put a picture
+	final int[] pictureSurfacesIndex = { 0, 1, 2 };
 
-	// effectextures
+	// vars for the effects
 	// --------------------------MetaBall--------------------
 	final int EFFECT_INDEX_METABALL = 3;
 	GLTexture metaBallTex;
@@ -50,9 +50,6 @@ public class MyProcessingSketch extends PApplet {
 
 	// -------------------------------------------------------
 
-	
-	
-	
 	static public void main(String args[]) {
 		PApplet.main(new String[] { "--display=1", "--present",
 				"MyProcessingSketch" });
@@ -91,12 +88,11 @@ public class MyProcessingSketch extends PApplet {
 						"BlendUnmultiplied.xml"));
 		BlendModes.add(new LayerBlend(this, "Normal (Premultiplied, CG Alpha)",
 				"BlendPremultiplied.xml"));
-		
-		
+
 		glos = new GLGraphicsOffScreen(this, width, height, false);
-		picChosser = new PictureChooser(this, pictureSurfaces.length,
+		picChosser = new PictureChooser(this, pictureSurfacesIndex.length,
 				picLocation);
-		shownTextures = new TextureSurface[pictureSurfaces.length];
+		shownTextures = new TextureSurface[pictureSurfacesIndex.length];
 
 		for (int i = 0; i < shownTextures.length; i++) {
 			String filePath = picChosser.randomizeFile().getAbsolutePath();
@@ -105,7 +101,7 @@ public class MyProcessingSketch extends PApplet {
 					this), BlendModes.get(16));
 		}
 
-		newPicturesFiles = new File[pictureSurfaces.length];
+		newPicturesFiles = new File[pictureSurfacesIndex.length];
 		sm = new SurfaceMapper(this, width, height);
 
 		picChosser.runChooser();
@@ -116,32 +112,29 @@ public class MyProcessingSketch extends PApplet {
 			sm.toggleCalibration();
 		}
 
-		// PGraphics wich will be used for effects
+		// vars which will be used for effects
 
 		// ----MetaBall-------
 		metaBallTex = new GLTexture(this);
 		pgMetaBall = createGraphics(160, 90, P2D);
-		//blob position
-		blogPx  = new int[numBlobs];
-		blogPy  = new int[numBlobs];
-		//movement vector
+		// blob position
+		blogPx = new int[numBlobs];
+		blogPy = new int[numBlobs];
+		// movement vector
 		blogDx = new int[numBlobs];
-		blogDy  = new int[numBlobs];
+		blogDy = new int[numBlobs];
 		Random r = new Random();
-		for(int i=0; i<numBlobs;i++){
-			blogDx[i]=1;
-			blogDy[i]=1;
-			blogPx[i] = (int)(r.nextDouble()*pgMetaBall.width);
-			blogPy[i] = (int)(r.nextDouble()*pgMetaBall.height);
+		for (int i = 0; i < numBlobs; i++) {
+			blogDx[i] = 1;
+			blogDy[i] = 1;
+			blogPx[i] = (int) (r.nextDouble() * pgMetaBall.width);
+			blogPy[i] = (int) (r.nextDouble() * pgMetaBall.height);
 		}
-		
+
 		vy = new int[numBlobs][pgMetaBall.height];
 		vx = new int[numBlobs][pgMetaBall.width];
 		// ----MetaBall--------
 	}
-
-
-	
 
 	public void draw() {
 		background(0);
@@ -167,7 +160,7 @@ public class MyProcessingSketch extends PApplet {
 		// render pictures
 		updateTextures();
 		int j = 0;
-		for (int i : pictureSurfaces) {
+		for (int i : pictureSurfacesIndex) {
 			SuperSurface sS = sm.getSurfaceById(i);
 			shownTextures[j].setSS(sS);
 			shownTextures[j].draw();
@@ -273,7 +266,8 @@ public class MyProcessingSketch extends PApplet {
 			newPicTure = true;
 		}
 	}
-	
+
+	//draw routin for the metaballs
 	private void metaBalldraw() {
 		for (int i = 0; i < numBlobs; ++i) {
 			blogPx[i] += blogDx[i];
