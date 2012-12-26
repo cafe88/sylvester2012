@@ -1,7 +1,9 @@
+import ixagon.SurfaceMapper.Point3D;
 import ixagon.SurfaceMapper.SuperSurface;
 import ixagon.SurfaceMapper.SurfaceMapper;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ public class MyProcessingSketch extends PApplet {
 	String picLocation = "src\\testPictures";
 
 	ArrayList<LayerBlend> BlendModes; // will be an arraylist of LayerBlends
-	TextureSurface[] shownTextures;
+	ISurface[] shownTextures;
 	File[] newPicturesFiles;
 	PictureChooser picChosser;
 	GLGraphicsOffScreen glos;
@@ -35,18 +37,7 @@ public class MyProcessingSketch extends PApplet {
 	// vars for the effects
 	// --------------------------MetaBall--------------------
 	final int EFFECT_INDEX_METABALL = 3;
-	GLTexture metaBallTex;
-	final int numBlobs = 5;
-
-	int[] blogPx;
-	int[] blogPy;
-
-	// Movement vector for each blob
-	int[] blogDx;
-	int[] blogDy;
-
-	PGraphics pgMetaBall;
-	int[][] vy, vx;
+	
 
 	// -------------------------------------------------------
 
@@ -90,50 +81,49 @@ public class MyProcessingSketch extends PApplet {
 				"BlendPremultiplied.xml"));
 
 		glos = new GLGraphicsOffScreen(this, width, height, false);
-		picChosser = new PictureChooser(this, pictureSurfacesIndex.length,
-				picLocation);
-		shownTextures = new TextureSurface[pictureSurfacesIndex.length];
 
-		for (int i = 0; i < shownTextures.length; i++) {
-			String filePath = picChosser.randomizeFile().getAbsolutePath();
-			shownTextures[i] = new TextureSurface(this, new GLTexture(this,
-					filePath), new GLTexture(this, filePath), new GLTexture(
-					this), BlendModes.get(16));
-		}
-
-		newPicturesFiles = new File[pictureSurfacesIndex.length];
 		sm = new SurfaceMapper(this, width, height);
-
-		picChosser.runChooser();
 
 		// start the show imediatly
 		if (startImediatly) {
 			sm.load("bla.xml");
 			sm.toggleCalibration();
+			initSurfaces();
 		}
+	}
+	
+	public static Rectangle getSSRect(SuperSurface ss) {
+		Point3D[] cP = ss.getCornerPoints();
+		int xM1 = (int) ((cP[0].x + cP[3].x) / 2);
+		int xM2 = (int) ((cP[1].x + cP[2].x) / 2);
+		int yM1 = (int) ((cP[0].y + cP[1].y) / 2);
+		int yM2 = (int) ((cP[2].y + cP[3].y) / 2);
+		
+		int xD = Math.abs(xM2 - xM1);
+		int yD = Math.abs(yM2 - yM1);
+		
+		return new Rectangle(xM1, yM2, xD, yD);
+	}
+	
+	public void initSurfaces() {
+		int num = sm.getSurfaces().size();
+		
+		picChosser = new PictureChooser(this, num, picLocation);
+		shownTextures = new ISurface[num];
 
-		// vars which will be used for effects
-
-		// ----MetaBall-------
-		metaBallTex = new GLTexture(this);
-		pgMetaBall = createGraphics(160, 90, P2D);
-		// blob position
-		blogPx = new int[numBlobs];
-		blogPy = new int[numBlobs];
-		// movement vector
-		blogDx = new int[numBlobs];
-		blogDy = new int[numBlobs];
-		Random r = new Random();
-		for (int i = 0; i < numBlobs; i++) {
-			blogDx[i] = 1;
-			blogDy[i] = 1;
-			blogPx[i] = (int) (r.nextDouble() * pgMetaBall.width);
-			blogPy[i] = (int) (r.nextDouble() * pgMetaBall.height);
+		for (int i = 0; i < shownTextures.length-1; i++) {
+			//String filePath = picChosser.randomizeFile().getAbsolutePath();
+			shownTextures[i] = new PictureSurface(this, 
+					new GLTexture(this), 
+					new GLTexture(this), 
+					new GLTexture(this), 
+					BlendModes.get(16));
 		}
+		
+		shownTextures[shownTextures.length-1] = new MetaBallSurface(this);
 
-		vy = new int[numBlobs][pgMetaBall.height];
-		vx = new int[numBlobs][pgMetaBall.width];
-		// ----MetaBall--------
+		newPicturesFiles = new File[num];
+		picChosser.runChooser();
 	}
 
 	public void draw() {
@@ -150,7 +140,7 @@ public class MyProcessingSketch extends PApplet {
 		// render all surfaces in render mode
 		if (sm.getMode() == sm.MODE_RENDER) {
 			renderSurfaces();
-			metaBalldraw();
+			//metaBalldraw();
 		}
 		glos.getTexture().render(0, 0, width, height);
 	}
@@ -160,12 +150,12 @@ public class MyProcessingSketch extends PApplet {
 		// render pictures
 		updateTextures();
 		int j = 0;
-		for (int i : pictureSurfacesIndex) {
-			SuperSurface sS = sm.getSurfaceById(i);
-			shownTextures[j].setSS(sS);
-			shownTextures[j].draw();
-			sS.render(glos, shownTextures[j].getTexture());
-			j++;
+		for (ISurface i : shownTextures) {
+			SuperSurface sS = sm.getSurfaceById(j++);
+			
+			i.setSS(sS);
+			i.draw();
+			sS.render(glos, i.getTexture());
 		}
 	}
 
@@ -175,9 +165,9 @@ public class MyProcessingSketch extends PApplet {
 		synchronized (newPicturesFiles) {
 			int i = 0;
 			for (File file : newPicturesFiles) {
-				if (file != null) {
+				if (file != null && shownTextures[i].getID() == ISurface.PICTURE) {
 					PictureSwitcher pswitch = new PictureSwitcher(this,
-							shownTextures[i], file.getAbsolutePath());
+							(PictureSurface)shownTextures[i], file.getAbsolutePath());
 					new Thread(pswitch).start();
 					newPicturesFiles[i] = null;
 				}
@@ -197,6 +187,7 @@ public class MyProcessingSketch extends PApplet {
 		// switch between calibration and render mode
 		if (key == 'c')
 			sm.toggleCalibration();
+			initSurfaces();
 		// increase subdivision of surface
 		if (key == 'p') {
 			for (SuperSurface ss : sm.getSelectedSurfaces()) {
@@ -265,57 +256,5 @@ public class MyProcessingSketch extends PApplet {
 			newPicturesFiles[i] = file;
 			newPicTure = true;
 		}
-	}
-
-	//draw routin for the metaballs
-	private void metaBalldraw() {
-		for (int i = 0; i < numBlobs; ++i) {
-			blogPx[i] += blogDx[i];
-			blogPy[i] += blogDy[i];
-
-			// bounce across screen
-			if (blogPx[i] < 0) {
-				blogDx[i] = 1;
-			}
-			if (blogPx[i] > pgMetaBall.width) {
-				blogDx[i] = -1;
-			}
-			if (blogPy[i] < 0) {
-				blogDy[i] = 1;
-			}
-			if (blogPy[i] > pgMetaBall.height) {
-				blogDy[i] = -1;
-			}
-
-			for (int x = 0; x < pgMetaBall.width; x++) {
-				vx[i][x] = (int) (sq(blogPx[i] - x));
-			}
-
-			for (int y = 0; y < pgMetaBall.height; y++) {
-				vy[i][y] = (int) (sq(blogPy[i] - y));
-			}
-		}
-
-		// Output into a buffered image for reuse
-		pgMetaBall.beginDraw();
-		pgMetaBall.loadPixels();
-		for (int y = 0; y < pgMetaBall.height; y++) {
-			for (int x = 0; x < pgMetaBall.width; x++) {
-				int m = 30;
-				for (int i = 0; i < numBlobs; i++) {
-					// Increase this number to make your blobs bigger
-					m += 10000 / (vy[i][y] + vx[i][x] + 1);
-				}
-				pgMetaBall.pixels[x + y * pgMetaBall.width] = color(0, m + x,
-						(x + m + y) / 2);
-			}
-		}
-		pgMetaBall.updatePixels();
-		pgMetaBall.endDraw();
-
-		// Display the results
-		// image(pg, 0, 0, width, height);
-		metaBallTex.putImage(pgMetaBall);
-		sm.getSurfaceById(EFFECT_INDEX_METABALL).render(glos, metaBallTex);
 	}
 }

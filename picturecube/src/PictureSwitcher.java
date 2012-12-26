@@ -4,10 +4,10 @@ import codeanticode.glgraphics.GLTexture;
 
 public class PictureSwitcher implements Runnable {
 	PApplet parent;
-	TextureSurface ss;
+	PictureSurface ss;
 	String file;
 	
-	public PictureSwitcher(PApplet parent, TextureSurface ss, String file) {
+	public PictureSwitcher(PApplet parent, PictureSurface ss, String file) {
 		this.parent = parent;
 		this.ss = ss;
 		this.file = file;
