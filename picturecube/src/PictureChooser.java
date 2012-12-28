@@ -18,7 +18,7 @@ public class PictureChooser implements Runnable {
 	int picCount;
 	public static final long PIC_SHOW_TIME = 8000;
 	final long PIC_FADE_TIME = 2000;
-	final long SLEEP_TIME = 1000;
+	final long SLEEP_TIME = 200;
 
 	/**
 	 * Inits the Object.
@@ -83,13 +83,19 @@ public class PictureChooser implements Runnable {
 	public void run() {
 
 		long[] shownOnScreen = new long[picCount];
-		Arrays.fill(shownOnScreen, System.currentTimeMillis());
+		// same startpoint
+//		Arrays.fill(shownOnScreen, System.currentTimeMillis());
+		//different startpoint
+		for(int i =0;i<shownOnScreen.length;i++){
+			shownOnScreen[i]= System.currentTimeMillis()+(long)(Math.random()*(PIC_SHOW_TIME));
+		}
 
 		while (true) {
+			
 			for (int i = 0; i < picCount; i++) {
 				// grep new image if the current image is longer on the screen
 				// the show time
-				if (System.currentTimeMillis() - shownOnScreen[i] > (PIC_SHOW_TIME + (Math.random() * (PIC_SHOW_TIME)))) {
+				if (System.currentTimeMillis() - shownOnScreen[i] > (PIC_SHOW_TIME)) {
 
 					// first check if we got new shit rolling and show it
 					boolean isEmpty = filelList.getNewFiles().isEmpty();
@@ -97,7 +103,6 @@ public class PictureChooser implements Runnable {
 					if (!isEmpty) {
 						synchronized (this) {
 							switchPictures(i, filelList.getNewFiles().get(0));
-							System.out.println("2");
 						}
 						// remove the image from the newlist and add it to
 						files.add(filelList.getNewFiles().get(0));
@@ -106,15 +111,15 @@ public class PictureChooser implements Runnable {
 						// shit
 					} else {
 						File random = randomizeFile();
-						//System.out.println("new File " + random.getName());
+						System.out.println("new File at:  "+i +" Name: "+ random.getName());
 						synchronized (this) {
 							switchPictures(i, random);
-							System.out.println("1");
 						}
 					}
 					shownOnScreen[i] = System.currentTimeMillis();
 				}
 			}
+			
 			try {
 				Thread.sleep(SLEEP_TIME);
 			} catch (Exception e) {

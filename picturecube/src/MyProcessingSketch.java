@@ -29,7 +29,7 @@ public class MyProcessingSketch extends PApplet {
 	SurfaceMapper sm;
 
 	// starts in rendermode
-	final boolean startImediatly = false;
+	final boolean startImediatly = true;
 
 	// index of the surfaces where we want to put a picture
 	final int[] pictureSurfacesIndex = { 0, 1, 2 };
@@ -37,7 +37,6 @@ public class MyProcessingSketch extends PApplet {
 	// vars for the effects
 	// --------------------------MetaBall--------------------
 	final int EFFECT_INDEX_METABALL = 3;
-	
 
 	// -------------------------------------------------------
 
@@ -91,36 +90,34 @@ public class MyProcessingSketch extends PApplet {
 			initSurfaces();
 		}
 	}
-	
+
 	public static Rectangle getSSRect(SuperSurface ss) {
 		Point3D[] cP = ss.getCornerPoints();
 		int xM1 = (int) ((cP[0].x + cP[3].x) / 2);
 		int xM2 = (int) ((cP[1].x + cP[2].x) / 2);
 		int yM1 = (int) ((cP[0].y + cP[1].y) / 2);
 		int yM2 = (int) ((cP[2].y + cP[3].y) / 2);
-		
+
 		int xD = Math.abs(xM2 - xM1);
 		int yD = Math.abs(yM2 - yM1);
-		
+
 		return new Rectangle(xM1, yM2, xD, yD);
 	}
-	
+
 	public void initSurfaces() {
 		int num = sm.getSurfaces().size();
-		
+
 		picChosser = new PictureChooser(this, num, picLocation);
 		shownTextures = new ISurface[num];
 
 		for (int i = 0; i < shownTextures.length; i++) {
-			//String filePath = picChosser.randomizeFile().getAbsolutePath();
-			shownTextures[i] = new PictureSurface(this, 
-					new GLTexture(this), 
-					new GLTexture(this), 
-					new GLTexture(this), 
+			// String filePath = picChosser.randomizeFile().getAbsolutePath();
+			shownTextures[i] = new PictureSurface(this, new GLTexture(this),
+					new GLTexture(this), new GLTexture(this),
 					BlendModes.get(16));
 		}
-		
-		//shownTextures[shownTextures.length-1] = new MetaBallSurface(this);
+
+		// shownTextures[shownTextures.length-1] = new MetaBallSurface(this);
 
 		newPicturesFiles = new File[num];
 		picChosser.runChooser();
@@ -139,8 +136,11 @@ public class MyProcessingSketch extends PApplet {
 			sm.render(glos);
 		// render all surfaces in render mode
 		if (sm.getMode() == sm.MODE_RENDER) {
+			//long start = System.currentTimeMillis();
 			renderSurfaces();
-			//metaBalldraw();
+			//System.out.println("rendering all Surfaces takes: "
+			//		+ (System.currentTimeMillis() - start));
+			// metaBalldraw();
 		}
 		glos.getTexture().render(0, 0, width, height);
 	}
@@ -148,11 +148,11 @@ public class MyProcessingSketch extends PApplet {
 	// draws all the surfaces
 	private void renderSurfaces() {
 		// render pictures
-		updateTextures();
+		updateTextures(); //schnell
 		int j = 0;
 		for (ISurface i : shownTextures) {
 			SuperSurface sS = sm.getSurfaceById(j++);
-			
+
 			i.setSS(sS);
 			i.draw();
 			sS.render(glos, i.getTexture());
@@ -160,15 +160,19 @@ public class MyProcessingSketch extends PApplet {
 	}
 
 	private void updateTextures() {
-		if (!newPicTure)
-			return;
 		synchronized (newPicturesFiles) {
+			if (!newPicTure)
+				return;
+
 			int i = 0;
 			for (File file : newPicturesFiles) {
-				if (file != null && shownTextures[i].getID() == ISurface.PICTURE) {
-					PictureSwitcher pswitch = new PictureSwitcher(this,
-							(PictureSurface)shownTextures[i], file.getAbsolutePath());
-					new Thread(pswitch).start();
+				if (file != null
+						&& shownTextures[i].getID() == ISurface.PICTURE) {
+					((PictureSurface)shownTextures[i]).setOrginImage(file.getAbsolutePath());
+//					PictureSwitcher pswitch = new PictureSwitcher(this,
+//							(PictureSurface) shownTextures[i],
+//							file.getAbsolutePath());
+//					new Thread(pswitch).start();
 					newPicturesFiles[i] = null;
 				}
 				i++;
@@ -187,7 +191,7 @@ public class MyProcessingSketch extends PApplet {
 		// switch between calibration and render mode
 		if (key == 'c')
 			sm.toggleCalibration();
-			initSurfaces();
+		initSurfaces();
 		// increase subdivision of surface
 		if (key == 'p') {
 			for (SuperSurface ss : sm.getSelectedSurfaces()) {
@@ -208,10 +212,11 @@ public class MyProcessingSketch extends PApplet {
 		if (key == 's')
 			sm.save("bla.xml");
 		// load layout from xml
-		if (key == 'l')
+		if (key == 'l') {
 			sm.load("bla.xml");
-		for (SuperSurface ss : sm.getSurfaces()) {
-			System.out.println("Supersurfaceid: " + ss.getId());
+			for (SuperSurface ss : sm.getSurfaces()) {
+				System.out.println("Supersurfaceid: " + ss.getId());
+			}
 		}
 		// rotate how the texture is mapped in to the QUAD (clockwise)
 		if (key == 'j') {
