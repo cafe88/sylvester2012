@@ -29,7 +29,7 @@ public class MyProcessingSketch extends PApplet {
 	SurfaceMapper sm;
 
 	// starts in rendermode
-	final boolean startImediatly = true;
+	final boolean startImediatly = false;
 
 	// index of the surfaces where we want to put a picture
 	final int[] pictureSurfacesIndex = { 0, 1, 2 };
@@ -111,7 +111,7 @@ public class MyProcessingSketch extends PApplet {
 		picChosser = new PictureChooser(this, num, picLocation);
 		shownTextures = new ISurface[num];
 
-		for (int i = 0; i < shownTextures.length-1; i++) {
+		for (int i = 0; i < shownTextures.length; i++) {
 			//String filePath = picChosser.randomizeFile().getAbsolutePath();
 			shownTextures[i] = new PictureSurface(this, 
 					new GLTexture(this), 
@@ -120,7 +120,7 @@ public class MyProcessingSketch extends PApplet {
 					BlendModes.get(16));
 		}
 		
-		shownTextures[shownTextures.length-1] = new MetaBallSurface(this);
+		//shownTextures[shownTextures.length-1] = new MetaBallSurface(this);
 
 		newPicturesFiles = new File[num];
 		picChosser.runChooser();

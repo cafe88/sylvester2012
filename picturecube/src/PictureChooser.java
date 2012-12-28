@@ -16,7 +16,7 @@ public class PictureChooser implements Runnable {
 	UpdateFilelist filelList;
 	MyProcessingSketch parent;
 	int picCount;
-	public static final long PIC_SHOW_TIME = 5000;
+	public static final long PIC_SHOW_TIME = 8000;
 	final long PIC_FADE_TIME = 2000;
 	final long SLEEP_TIME = 1000;
 
@@ -97,6 +97,7 @@ public class PictureChooser implements Runnable {
 					if (!isEmpty) {
 						synchronized (this) {
 							switchPictures(i, filelList.getNewFiles().get(0));
+							System.out.println("2");
 						}
 						// remove the image from the newlist and add it to
 						files.add(filelList.getNewFiles().get(0));
@@ -108,6 +109,7 @@ public class PictureChooser implements Runnable {
 						//System.out.println("new File " + random.getName());
 						synchronized (this) {
 							switchPictures(i, random);
+							System.out.println("1");
 						}
 					}
 					shownOnScreen[i] = System.currentTimeMillis();

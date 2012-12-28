@@ -50,8 +50,8 @@ public class PictureSurface implements ISurface {
 		crop = new GLTextureFilter(parent, "BlendColor.xml");
 		
 		this.filter = filter;
-		fadeSteps = 10;
-		drawCounterSteps = 10;
+		fadeSteps = 5;
+		drawCounterSteps = 5;
 		fadeCounter = 0;
 		this.parent = parent;
 	}
@@ -80,7 +80,9 @@ public class PictureSurface implements ISurface {
 				lastCropped.copy(nextCropped);
 				orginTexture.putImage(newImg);
 				newImg.delete();
+				//newImg = null;
 				resetCounter();
+				//System.gc();
 			}	
 			//System.out.println("drawcounter: "+drawCounter+" drawcountersteps: "+ drawCounterSteps+" scheise modulo: "+
 			//		drawCounter % drawCounterSteps);
@@ -189,6 +191,7 @@ public class PictureSurface implements ISurface {
 	public void setOrginImage(String file) {
 		newImg = parent.loadImage(file);
 		updateTex = true;
+		//System.out.println("wtf??");
 	}
 
 	public void resetCounter() {
