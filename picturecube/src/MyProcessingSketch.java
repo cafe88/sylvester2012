@@ -21,12 +21,22 @@ public class MyProcessingSketch extends PApplet {
 
 	String picLocation = "src\\testPictures";
 
+	// doorbellserver Vars
+	final int PORT_DOOR = 4242;
+	boolean doorBellRinging = false;
+	int doorBellOpacity = 0;
+	int doorSteps = 20;
+	int doorFadeSteps = 10;
+
 	ArrayList<LayerBlend> BlendModes; // will be an arraylist of LayerBlends
 	ISurface[] shownTextures;
 	File[] newPicturesFiles;
 	PictureChooser picChosser;
 	GLGraphicsOffScreen glos;
 	SurfaceMapper sm;
+
+	GLTexture doorbellTexture;
+	GLTexture fadeDoorbellTexture;
 
 	// starts in rendermode
 	final boolean startImediatly = true;
@@ -83,6 +93,12 @@ public class MyProcessingSketch extends PApplet {
 
 		sm = new SurfaceMapper(this, width, height);
 
+		// texture for the doorbellring
+		doorbellTexture = new GLTexture(this, "data\\doorbell.jpg");
+		fadeDoorbellTexture = new GLTexture(this);
+		Thread door = new Thread(new DoorListener(PORT_DOOR, this));
+		door.start();
+
 		// start the show imediatly
 		if (startImediatly) {
 			sm.load("bla.xml");
@@ -136,10 +152,10 @@ public class MyProcessingSketch extends PApplet {
 			sm.render(glos);
 		// render all surfaces in render mode
 		if (sm.getMode() == sm.MODE_RENDER) {
-			//long start = System.currentTimeMillis();
+			// long start = System.currentTimeMillis();
 			renderSurfaces();
-			//System.out.println("rendering all Surfaces takes: "
-			//		+ (System.currentTimeMillis() - start));
+			// System.out.println("rendering all Surfaces takes: "
+			// + (System.currentTimeMillis() - start));
 			// metaBalldraw();
 		}
 		glos.getTexture().render(0, 0, width, height);
@@ -148,15 +164,37 @@ public class MyProcessingSketch extends PApplet {
 	// draws all the surfaces
 	private void renderSurfaces() {
 		// render pictures
-		updateTextures(); //schnell
+		updateTextures(); // schnell
 		int j = 0;
 		for (ISurface i : shownTextures) {
 			SuperSurface sS = sm.getSurfaceById(j++);
 
 			i.setSS(sS);
 			i.draw();
-			sS.render(glos, i.getTexture());
+
+			synchronized (doorbellTexture) {
+				// if you dont want to fade the surface when the bell is ringing
+				// put an if i ==shouldNotRing or something like that and render it directly
+				sS.render(glos, doorBellFade(i));
+			}
 		}
+	}
+
+	private GLTexture doorBellFade(ISurface surfaceTexture) {
+		if(!doorBellRinging){
+			if(doorBellOpacity <=0) return surfaceTexture.getTexture();
+			doorBellOpacity--;
+		}else{
+			if(doorBellOpacity >=(doorSteps*doorFadeSteps)) return doorbellTexture;
+			doorBellOpacity++;
+		}
+		int i = doorBellOpacity/doorSteps;
+		float o=(float)(1f/doorFadeSteps*i);
+		BlendModes.get(16).filter.setParameterValue("Opacity",
+				o);
+		BlendModes.get(16).apply(surfaceTexture.getTexture(),doorbellTexture,
+				 fadeDoorbellTexture);
+		return fadeDoorbellTexture;
 	}
 
 	private void updateTextures() {
@@ -168,11 +206,12 @@ public class MyProcessingSketch extends PApplet {
 			for (File file : newPicturesFiles) {
 				if (file != null
 						&& shownTextures[i].getID() == ISurface.PICTURE) {
-					((PictureSurface)shownTextures[i]).setOrginImage(file.getAbsolutePath());
-//					PictureSwitcher pswitch = new PictureSwitcher(this,
-//							(PictureSurface) shownTextures[i],
-//							file.getAbsolutePath());
-//					new Thread(pswitch).start();
+					((PictureSurface) shownTextures[i]).setOrginImage(file
+							.getAbsolutePath());
+					// PictureSwitcher pswitch = new PictureSwitcher(this,
+					// (PictureSurface) shownTextures[i],
+					// file.getAbsolutePath());
+					// new Thread(pswitch).start();
 					newPicturesFiles[i] = null;
 				}
 				i++;
@@ -260,6 +299,12 @@ public class MyProcessingSketch extends PApplet {
 		synchronized (newPicturesFiles) {
 			newPicturesFiles[i] = file;
 			newPicTure = true;
+		}
+	}
+
+	public void setDoorBell(boolean door) {
+		synchronized (doorbellTexture) {
+			doorBellRinging = door;
 		}
 	}
 }
