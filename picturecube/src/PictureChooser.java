@@ -16,7 +16,7 @@ public class PictureChooser implements Runnable {
 	UpdateFilelist filelList;
 	MyProcessingSketch parent;
 	int picCount;
-	public static final long PIC_SHOW_TIME = 8000;
+	public static final long PIC_SHOW_TIME = 12000;
 	final long PIC_FADE_TIME = 2000;
 	final long SLEEP_TIME = 200;
 
@@ -48,7 +48,9 @@ public class PictureChooser implements Runnable {
 	
 	}
 /**
- * should maybe check if we already have one picture in the show array
+ * should maybe check if we already have one pi
+ * 
+ * cture in the show array
  * @return
  */
 	public void runChooser(){

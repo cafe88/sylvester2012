@@ -100,7 +100,8 @@ public class PictureSurface implements ISurface {
 					timeLeft = PictureChooser.PIC_SHOW_TIME;
 					slideMillis = 0;
 				}
-				timeLeft -= 1500;
+				//timeLeft -= 1500;
+				//timeLeft += 1500;
 				float slideY = (float) slideMillis / (float) timeLeft;
 				if (slideY >= 0.0 && slideY <= 1.0) {
 					float aspectRatioOld = ((float) oldTexture.width / (float) oldTexture.height);
@@ -185,9 +186,9 @@ public class PictureSurface implements ISurface {
 			lastCropped.init(xD, yD);
 			nextCropped.init(xD, yD);
 
-			aspectRatioSS = ((float) xD / (float) yD);
+			aspectRatioSS = (float)MyProcessingSketch.getSSRealAR(ss);
 		}
-			}
+	}
 
 	public GLTexture getTexture() {
 		return shownTexture;

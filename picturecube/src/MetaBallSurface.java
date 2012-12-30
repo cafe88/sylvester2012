@@ -9,7 +9,7 @@ import codeanticode.glgraphics.GLTexture;
 
 public class MetaBallSurface implements ISurface {
 	GLTexture metaBallTex;
-	final int numBlobs = 5;
+	final int numBlobs = 2;
 
 	int[] blogPx;
 	int[] blogPy;
@@ -102,7 +102,7 @@ public class MetaBallSurface implements ISurface {
 			int xD = r.width;
 			int yD = r.height;
 			
-			pgMetaBall = parent.createGraphics(xD, yD, parent.P2D);
+			pgMetaBall = parent.createGraphics(xD/4, yD/4, parent.P2D);
 			// blob position
 			blogPx = new int[numBlobs];
 			blogPy = new int[numBlobs];

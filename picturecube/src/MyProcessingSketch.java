@@ -7,7 +7,10 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+
+import antlr.collections.List;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -49,6 +52,10 @@ public class MyProcessingSketch extends PApplet {
 	final int EFFECT_INDEX_METABALL = 3;
 
 	// -------------------------------------------------------
+	
+	static final double[] arSurface = {1.12, 1.28, 1.4, 0.99, 0.88, 0.72, 0.92, 0.84, 0.6};
+	
+	ArrayList<PictureSurface> picSurf;
 
 	static public void main(String args[]) {
 		PApplet.main(new String[] { "--display=1", "--present",
@@ -98,6 +105,8 @@ public class MyProcessingSketch extends PApplet {
 		fadeDoorbellTexture = new GLTexture(this);
 		Thread door = new Thread(new DoorListener(PORT_DOOR, this));
 		door.start();
+		
+		picSurf = new ArrayList(4);
 
 		// start the show imediatly
 		if (startImediatly) {
@@ -109,32 +118,84 @@ public class MyProcessingSketch extends PApplet {
 
 	public static Rectangle getSSRect(SuperSurface ss) {
 		Point3D[] cP = ss.getCornerPoints();
-		int xM1 = (int) ((cP[0].x + cP[3].x) / 2);
-		int xM2 = (int) ((cP[1].x + cP[2].x) / 2);
-		int yM1 = (int) ((cP[0].y + cP[1].y) / 2);
-		int yM2 = (int) ((cP[2].y + cP[3].y) / 2);
-
-		int xD = Math.abs(xM2 - xM1);
-		int yD = Math.abs(yM2 - yM1);
-
-		return new Rectangle(xM1, yM2, xD, yD);
+		
+		ArrayList<Point3D> p3d = new ArrayList(4);
+		p3d.add(cP[0]);
+		for (int i = 1; i < cP.length; i++) {
+			for (int j = 0; j < p3d.size(); j++) {
+				if(cP[i].x < p3d.get(j).x) {
+					p3d.add(j, cP[i]);
+					break;
+				}
+			}
+			
+			if(!p3d.contains(cP[i])) {
+				p3d.add(cP[i]);
+			}
+		}
+		
+		Point3D ul = p3d.get(0);
+		Point3D ll = p3d.get(1);
+		Point3D ur = p3d.get(2);
+		Point3D lr = p3d.get(3);
+		
+		if(p3d.get(0).y < p3d.get(1).y) {
+			ul = p3d.get(1);
+			ll = p3d.get(0);
+		}
+		
+		if(p3d.get(2).y < p3d.get(3).y) {
+			ur = p3d.get(3);
+			lr = p3d.get(2);
+		}
+		
+//		int xM1 = (int) ((cP[0].x + cP[3].x) / 2);
+//		int xM2 = (int) ((cP[1].x + cP[2].x) / 2);
+//		int yM1 = (int) ((cP[0].y + cP[1].y) / 2);
+//		int yM2 = (int) ((cP[2].y + cP[3].y) / 2);
+//
+//		int xD = Math.abs(xM2 - xM1);
+//		int yD = Math.abs(yM2 - yM1);
+		
+		int xD = (int)Math.sqrt(Math.pow((ur.x - ul.x), 2) + Math.pow((ur.y - ul.y), 2));
+		int yD = (int)Math.sqrt(Math.pow((ur.x - lr.x), 2) + Math.pow((ur.y - lr.y), 2));
+		
+		return new Rectangle((int)ul.x, (int)ul.y, xD, yD);
+	}
+	
+	public static double getSSRealAR(SuperSurface ss) {
+		return arSurface[ss.getId()];
 	}
 
 	public void initSurfaces() {
 		int num = sm.getSurfaces().size();
 
-		picChosser = new PictureChooser(this, num, picLocation);
 		shownTextures = new ISurface[num];
 
+		shownTextures[1] = new CountdownSurface(this, CountdownSurface.HOURS);
+		shownTextures[5] = new CountdownSurface(this, CountdownSurface.MINUTES);
+		shownTextures[6] = new CountdownSurface(this, CountdownSurface.SECONDS);
+		shownTextures[0] = new MetaBallSurface(this);
+		shownTextures[2] = new MetaBallSurface(this);
+		
+		int files = 0;
+		
+		picSurf.clear();
+		
 		for (int i = 0; i < shownTextures.length; i++) {
 			// String filePath = picChosser.randomizeFile().getAbsolutePath();
-			shownTextures[i] = new PictureSurface(this, new GLTexture(this),
-					new GLTexture(this), new GLTexture(this),
-					BlendModes.get(16));
+			if(shownTextures[i] == null) {
+				shownTextures[i] = new PictureSurface(this, new GLTexture(this),
+						new GLTexture(this), new GLTexture(this),
+						BlendModes.get(16));
+				picSurf.add((PictureSurface)shownTextures[i]);
+				files++;
+			}	
 		}
-		// shownTextures[shownTextures.length-1] = new MetaBallSurface(this);
+		
+		picChosser = new PictureChooser(this, files, picLocation);
 
-		newPicturesFiles = new File[num];
+		newPicturesFiles = new File[files];
 		picChosser.runChooser();
 	}
 
@@ -203,10 +264,8 @@ public class MyProcessingSketch extends PApplet {
 
 			int i = 0;
 			for (File file : newPicturesFiles) {
-				if (file != null
-						&& shownTextures[i].getID() == ISurface.PICTURE) {
-					((PictureSurface) shownTextures[i]).setOrginImage(file
-							.getAbsolutePath());
+				if (file != null) {
+					picSurf.get(i).setOrginImage(file.getAbsolutePath());
 					// PictureSwitcher pswitch = new PictureSwitcher(this,
 					// (PictureSurface) shownTextures[i],
 					// file.getAbsolutePath());
@@ -227,9 +286,9 @@ public class MyProcessingSketch extends PApplet {
 		if (key == 'z')
 			sm.createBezierSurface(3, mouseX, mouseY);
 		// switch between calibration and render mode
-		if (key == 'c')
+		if (key == 'c') {
 			sm.toggleCalibration();
-		initSurfaces();
+			initSurfaces();}
 		// increase subdivision of surface
 		if (key == 'p') {
 			for (SuperSurface ss : sm.getSelectedSurfaces()) {
@@ -251,9 +310,12 @@ public class MyProcessingSketch extends PApplet {
 			sm.save("bla.xml");
 		// load layout from xml
 		if (key == 'l') {
+			{
 			sm.load("bla.xml");
 			for (SuperSurface ss : sm.getSurfaces()) {
 				System.out.println("Supersurfaceid: " + ss.getId());
+			}
+			initSurfaces();
 			}
 		}
 		// rotate how the texture is mapped in to the QUAD (clockwise)
