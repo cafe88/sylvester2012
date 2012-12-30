@@ -132,7 +132,6 @@ public class MyProcessingSketch extends PApplet {
 					new GLTexture(this), new GLTexture(this),
 					BlendModes.get(16));
 		}
-
 		// shownTextures[shownTextures.length-1] = new MetaBallSurface(this);
 
 		newPicturesFiles = new File[num];
