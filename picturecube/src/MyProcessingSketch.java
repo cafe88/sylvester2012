@@ -22,7 +22,7 @@ public class MyProcessingSketch extends PApplet {
 
 	private boolean newPicTure = false;
 
-	String picLocation = "src\\testPictures";
+	String picLocation = "testPictures";
 
 	// doorbellserver Vars
 	final int PORT_DOOR = 4242;
