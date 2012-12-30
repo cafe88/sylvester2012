@@ -66,7 +66,7 @@ public class MyProcessingSketch extends PApplet {
 		Dimension scr = Toolkit.getDefaultToolkit().getScreenSize();
 		size(scr.width, scr.height, GLConstants.GLGRAPHICS);
 
-		// frameRate(10);
+		frameRate(20);
 
 		BlendModes = new ArrayList<>();
 		BlendModes.add(new LayerBlend(this, "Color", "BlendColor.xml"));
@@ -175,7 +175,7 @@ public class MyProcessingSketch extends PApplet {
 		shownTextures[1] = new CountdownSurface(this, CountdownSurface.HOURS);
 		shownTextures[5] = new CountdownSurface(this, CountdownSurface.MINUTES);
 		shownTextures[6] = new CountdownSurface(this, CountdownSurface.SECONDS);
-		shownTextures[0] = new MetaBallSurface(this);
+		shownTextures[0] = new FFTSurface(this);
 		shownTextures[2] = new MetaBallSurface(this);
 		
 		int files = 0;

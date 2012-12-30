@@ -21,5 +21,11 @@
 	<classpathentry kind="lib" path="lib/ecj.jar"/>
 	<classpathentry kind="lib" path="lib/jna.jar"/>
 	<classpathentry kind="lib" path="lib/pde.jar"/>
+	<classpathentry kind="lib" path="minim.jar"/>
+	<classpathentry kind="lib" path="jsminim.jar"/>
+	<classpathentry kind="lib" path="jl1.0.jar"/>
+	<classpathentry kind="lib" path="mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="tritonus_aos.jar"/>
+	<classpathentry kind="lib" path="tritonus_share.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

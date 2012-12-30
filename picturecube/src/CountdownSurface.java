@@ -1,6 +1,7 @@
 import ixagon.SurfaceMapper.SuperSurface;
 
 import java.awt.Rectangle;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Random;
@@ -49,7 +50,8 @@ public class CountdownSurface implements ISurface {
 		
 		g = parent.createGraphics(500, 500, parent.P2D);
 		
-		GregorianCalendar cal = new GregorianCalendar(2013, 1, 1, 0, 0, 0);
+		//GregorianCalendar cal = new GregorianCalendar(2013, 0, 1, 0, 0, 0);
+		GregorianCalendar cal = new GregorianCalendar(2012, 11, 30, 15, 59, 00);
 		end = cal.getTime();
 		
 		this.what = what;
@@ -69,6 +71,11 @@ public class CountdownSurface implements ISurface {
 		g.textFont(font);
 		g.noStroke();
 		
+		long neg = millisBetween % 1000;
+		if(millisBetween < 0) {
+			neg = -neg;
+		}
+		
 		//Draw Millis
 		for (int i = 0; i < millis.length; i++) {
 			if(millis[i][KEEPALIVE] <= 0) {
@@ -85,8 +92,8 @@ public class CountdownSurface implements ISurface {
 				g.textSize(128-millis[i][KEEPALIVE]);
 				g.fill(millis[i][KEEPALIVE]);
 				g.textAlign(millis[i][ALX], millis[i][ALY]);
-				g.text(""+(millisBetween % 1000), millis[i][X], millis[i][Y]);
-			}	
+				g.text(""+neg, millis[i][X], millis[i][Y]);
+			}
 		}
 		//End Millis
 		
@@ -99,7 +106,11 @@ public class CountdownSurface implements ISurface {
 		
 		switch(what) {
 			case CountdownSurface.HOURS:
-				t = (int)(millisBetween / (1000 * 60 * 60)) % 24;
+				if(millisBetween < 0) {
+					t = GregorianCalendar.getInstance().get(Calendar.HOUR_OF_DAY);
+				} else {
+					t = (int)(millisBetween / (1000 * 60 * 60)) % 24;
+				}
 				
 				if(t < 10) {
 					tstr = "0" + t;
@@ -109,7 +120,11 @@ public class CountdownSurface implements ISurface {
 				break;
 			
 			case CountdownSurface.MINUTES:
-				t = (int)(millisBetween / (1000 * 60)) % 60;
+				if(millisBetween < 0) {
+					t = GregorianCalendar.getInstance().get(Calendar.MINUTE);
+				} else {
+					t = (int)(millisBetween / (1000 * 60)) % 60;
+				}
 				
 				if(t < 10) {
 					tstr = "0" + t;
@@ -119,7 +134,11 @@ public class CountdownSurface implements ISurface {
 				break;
 				
 			case CountdownSurface.SECONDS:
-				t = (int)(millisBetween / (1000)) % 60;
+				if(millisBetween < 0) {
+					t = GregorianCalendar.getInstance().get(Calendar.SECOND);
+				} else {
+					t = (int)(millisBetween / (1000)) % 60;
+				}
 				
 				if(t < 10) {
 					tstr = "0" + t;
