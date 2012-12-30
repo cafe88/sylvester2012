@@ -12,11 +12,12 @@ import codeanticode.glgraphics.GLTexture;
 public class PictureChooser implements Runnable {
 
 	ArrayList<File> files;
+	long startTime[] = {4000,8000,12000,16000,20000};
 	File[] showList;
 	UpdateFilelist filelList;
 	MyProcessingSketch parent;
 	int picCount;
-	public static final long PIC_SHOW_TIME = 12000;
+	public static final long PIC_SHOW_TIME = 18000;
 	final long PIC_FADE_TIME = 2000;
 	final long SLEEP_TIME = 200;
 
@@ -89,7 +90,8 @@ public class PictureChooser implements Runnable {
 //		Arrays.fill(shownOnScreen, System.currentTimeMillis());
 		//different startpoint
 		for(int i =0;i<shownOnScreen.length;i++){
-			shownOnScreen[i]= System.currentTimeMillis()+(long)(Math.random()*(PIC_SHOW_TIME));
+			//shownOnScreen[i]= System.currentTimeMillis()+(long)(Math.random()*(PIC_SHOW_TIME));
+		  	shownOnScreen[i] = System.currentTimeMillis() -  startTime[i];
 		}
 
 		while (true) {

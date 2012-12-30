@@ -1,4 +1,3 @@
-import ixagon.SurfaceMapper.Point3D;
 import ixagon.SurfaceMapper.SuperSurface;
 
 import java.awt.Rectangle;
@@ -7,6 +6,7 @@ import processing.core.PApplet;
 import processing.core.PImage;
 import codeanticode.glgraphics.GLTexture;
 import codeanticode.glgraphics.GLTextureFilter;
+import codeanticode.glgraphics.GLTextureParameters;
 
 public class PictureSurface implements ISurface {
 
@@ -31,8 +31,7 @@ public class PictureSurface implements ISurface {
 	long slideMillis = 0;
 
 	PImage newImg;
-	boolean updateTex = false;
-
+	
 	GLTextureFilter crop;
 	float aspectRatioSS;
 
@@ -80,11 +79,26 @@ public class PictureSurface implements ISurface {
 			synchronized (this) {
 				if (newImg != null && newImg.width >0) {
 					lastCropped.copy(nextCropped);
-					orginTexture.putImage(newImg);
-				    newImg = null;
+					//orginTexture.putImage(newImg);
+				    //newImg = null;
+				    
+				    long start = System.currentTimeMillis();
+
+				  	//           orginTexture.putImage(newImg);
+				    if ((newImg.width != orginTexture.width)
+				    		|| (newImg.height != orginTexture.height)) {
+
+				    	orginTexture.init(newImg.width, newImg.height,
+				    			new GLTextureParameters());
+				    }
+				  	orginTexture.pixels = newImg.pixels;
+				  	orginTexture.loadTexture();
+				  	//orginTexture.updatePixels();
+				  	System.out.println("time: "
+				  			+ (System.currentTimeMillis() - start));
+				  	newImg = null;
+				    
 					resetCounter();
-					// System.gc();
-					updateTex = false;
 				}
 			}
 			// System.out.println("drawcounter: "+drawCounter+" drawcountersteps: "+
@@ -208,9 +222,6 @@ public class PictureSurface implements ISurface {
 		// picture is loaded if width and hight > 0 
 		// if an error occured -1
 			newImg = parent.requestImage(file);
-	
-		updateTex = true;
-		
 	}
 
 	public void resetCounter() {
