@@ -51,7 +51,7 @@ public class CountdownSurface implements ISurface {
 		g = parent.createGraphics(500, 500, parent.P2D);
 		
 		//GregorianCalendar cal = new GregorianCalendar(2013, 0, 1, 0, 0, 0);
-		GregorianCalendar cal = new GregorianCalendar(2012, 11, 30, 15, 59, 00);
+		GregorianCalendar cal = new GregorianCalendar(2013, 0, 1, 0, 0, 0);
 		end = cal.getTime();
 		
 		this.what = what;

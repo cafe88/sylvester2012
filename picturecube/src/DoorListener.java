@@ -5,7 +5,7 @@ import java.net.Socket;
 
 public class DoorListener implements Runnable {
 
-	private static final long DOOR_BELL_RINGIN_TIME = 2000;
+	private static final long DOOR_BELL_RINGIN_TIME = 7000;
 	ServerSocket server;
 	MyProcessingSketch parent;
 	int port;

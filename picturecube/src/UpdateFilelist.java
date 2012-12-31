@@ -56,8 +56,8 @@ public class UpdateFilelist implements Runnable {
 		// add all Files which are at the start of the application in location
 		System.out.println(location);
 		for (File file : this.location.listFiles()) {
-			if (file.getName().endsWith(".JPG")) {
-				System.out.println(file);
+			if (file.getName().toLowerCase().endsWith(".jpg")) {
+				//System.out.println(file);
 				files.add(file);
 			}
 		}
@@ -88,7 +88,7 @@ public class UpdateFilelist implements Runnable {
 			for (File foundFile : fileList) {
 				// if the file is not in the filelist we add them to newFie
 				if (!files.contains(foundFile)
-						&& foundFile.getName().endsWith(".JPG"))
+						&& foundFile.getName().toLowerCase().endsWith(".jpg"))
 					synchronized (this) {
 						System.out
 								.println("------------------Found a new Picture-------------------");

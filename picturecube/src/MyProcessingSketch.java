@@ -7,13 +7,10 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
-
-import antlr.collections.List;
 
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import codeanticode.glgraphics.GLConstants;
 import codeanticode.glgraphics.GLGraphicsOffScreen;
 import codeanticode.glgraphics.GLTexture;
@@ -22,7 +19,7 @@ public class MyProcessingSketch extends PApplet {
 
 	private boolean newPicTure = false;
 
-	String picLocation = "testPictures";
+	String picLocation = "E:\\Daten\\DropBox\\Camera Uploads";
 
 	// doorbellserver Vars
 	final int PORT_DOOR = 4242;
@@ -107,6 +104,9 @@ public class MyProcessingSketch extends PApplet {
 		door.start();
 		
 		picSurf = new ArrayList(4);
+		
+		File f = new File(picLocation);
+		if(!f.exists()) picLocation = "testPictures";
 
 		// start the show imediatly
 		if (startImediatly) {
@@ -235,7 +235,11 @@ public class MyProcessingSketch extends PApplet {
 			synchronized (doorbellTexture) {
 				// if you dont want to fade the surface when the bell is ringing
 				// put an if i ==shouldNotRing or something like that and render it directly
-				sS.render(glos, doorBellFade(i));
+				if(j==2||j==6||j==7) {
+					sS.render(glos,i.getTexture());
+					continue;
+				}
+					sS.render(glos, doorBellFade(i));
 			}
 		}
 	}
