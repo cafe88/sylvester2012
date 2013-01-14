@@ -9,6 +9,7 @@
 
 
 \usepackage[pdftex]{graphicx}
+\usepackage{wrapfig} % Paket zur Positionierung einbinden
 \usepackage{listings}
 
 % new commands
@@ -66,11 +67,50 @@ M. Sc.Alexander Neumann
 \newpage
 
 \chapter{Emitting Cubes }
-\section{Inspiration und Idee}
+\section{Inspiration}
+Im Rahmen mit der Veranstaltung Creative Coding hatten wir Berührung mit vielen Techniken zur kreativen Darstellung und Gestaltung. Eine davon ist Projektion Mapping, eine Technik die aus technischer Sicht sehr einfach umzusetzen ist, aber unglaublich viele Gestalterische Möglichkeiten bereit hält.Dabei werde Projektionsflächen per Software auf einem Objekt so "entzerrt" ,dass das Objekt  aussieht, als würde es von alle Seiten bestrahlt Es ist Allgemein bekannt wie dreidimensionale Objekte  auf zweidimensionale Flächen Projeziert werden können, der Umgekehrte Weg ist aber so ungewohnt und vielseitig einsetzbar, dass man sehr viele prägnante Möglichkeiten hat Werke zu erstellen. Diese Umstand hat uns so fasziniert, dass wir damit weiterarbeiten wollten. 
+
 \section{Intention}
+Wir wollten einmal mit der Technik des Projektion-Mappings arbeiten und sie einsetzten. Dabei sollte eine Konstruktion entstehen die sich durch ihre Besondere Darstellungsweise auszeichnet und wiederverwendet werden kann.
+
+\section{Idee}
+Im Rahmen unserer Silvesterfeier 2012/13 wollte wir eine ansprechendes Ambiente schaffen. Hierbei wollten wir der Dekoration unseren Touch geben und entschieden uns was eigenes zu bauen. Da in der Küche schon ein Beamer (FullHD) installiert ist wollten wir ihn in das Partykonzept einbinden. Somit war es nur ein kleiner Schritt zu den Würfeln. Grundidee war es Große Würfel zu bauen, die leicht schräg an die Decke montiert werden. Dadurch bietet jeder Würfel 3 Projektionsflächen die verschieden genutzt werden können. Am Ende waren es 3 Würfel mit insgesamt 9 Projektionsflächen. Dazu wurde eine Software geschrieben in Processing um die Flächen anzusteuern. Diese Flächen wurden während der gesamten Party angestrahlt. 2 davon zeigten Effekte , eine FFT am Line-Out sowie eine Lavalampe. Auf 3 zusammenhängenden Flächen wurde eine Countdown gezeigt, mit der Zeit bis zum Jahreswechsel, Auf den 4 größten Flächen wurden Bilder eingeblendet, die im Laufe des Abends geschossen wurden von der Party und von den Gästen. Da man bei solchen Partys nie mitbekommt wann geklingelt wurde, erweiterten wir die Software, mit einer WebCam und einem Tool zur Bewegungsdetektion an unserer Türklingel. Diese leuchtet immer wenn geklingelt wurde.  Als kleines Gimmick zeigten die Würfel mit einer kurzen Einblendung einer großen Glocke dann an, ob jemand geklingelt hat.
+
+
+\newpage
+
 \section{Aufbau und Techniken}
 
+\subsection{Die Würfel}
 
+\includegraphics[width=0.9\textwidth]{./wuerfel_beamer}\\[0.3cm]   
+
+\begin{wrapfigure}{r}{3cm} % l = Bild wird linksbündig positioniert, möglich ist auch r für rechtsbündig
+% 8cm ist der Abstand von links, der für das Bild freigehalten wird, rechts davon kann Text stehen
+\centering
+\includegraphics[width=0.4\textwidth]{./wuerfel_skelett}\\[0.3cm]   
+\begin{flushright}
+\textit{Würfelskelett}
+\end{flushright}
+\end{wrapfigure}
+Das Würfelskelett bestehen aus dünnen 5x2cm dicken Holzlatten, die aneinander geschraubt sind.
+Die Kanten der Würfel sind zwischen 35-50cm.  Die Projektionsflächen sind mit dicken Bastelpapier beklebt. Um die Würfel an die Decke zu hängen, wurde Packetband benutzt. hierbei wurden die Würfel direkt an der Decke an 2 Kanten Fixiert und noch einmal untereinander, um Schaukeln zu vermeiden.
+Ein Beamer mit FullHD-Auflösung wurde für die Projektionen genutzt. Dabei war der Beamer ganz normal für eine Leinwand ausgerichtet und die Würfel wurden in das "Bild" reingehängt.Die Würfel wurden so ausgerichtete, dass eine Ecke zum Beamer zeigte, um die Projektionsflächen zu Maximieren.
+Im oberen Bild sieht man die aufgehängten Würfel mit einem Testbild. 
+
+
+\subsection{Die Software}
+Um die Würfel anzusteuern wurde die Processing Bibliothek Surfacemapper verwendet. Mit dieser konnten wir mehrere Flächen erzeugen, sie auf die Seitenflächen der Würfel mappen und einzeln ansteuern. Anzumerken ist, dass die Software OpenGL nutzt um die Flächen zu verzerren. Dieses in Verbindung mit Processing kann sehr rechenintensiv sein und langsam, daher gab es  Optimierungsschwierigkeiten. Anbei sehen sie ein Bild mit den Würfeln wenn sie angestrahlt werden.
+\\ \\
+\includegraphics[width=0.7\textwidth]{./wuerfel_angestrahlt}\\[1cm]   
+Die Bilder wurden ständig gewechselt. Neue Bilder die über eine Smartphone aufgenommen wurden, sind per DropBox in das System gekommen und wurden als nächstes angezeigt, ansonsten wurden zyklisch neue Bilder eingefadet. Zu große Bilder, wurden über die Flächen langsam geschoben. 
+Der Countdown in der Mitte wurde nach 00 Uhr auf die Uhrzeit umgestellt. Links oben wurde eine FFT- in Waveform mit der aktuellen Musik angezeigt, rechts oben ein Effekt.
+Wie schon erwähnt wurde auf den Würfeln angezeigt wenn die Türklingel betätigt wurde. Dafür nahm eine WebCam die in der Nähe der Türklingel installiert wurde die Meldeleuchte auf, und löste auf dem Hauptsystem einen Trigger aus.
+
+\newpage
+
+\subsection{Aufwandsabschätzung}
+Der Bau der Würfelt hat um die 30 Mannstunden in Anspruch genommen. Dabei ist besonders viel Zeit für Bekleben und das Ausrichten aufgewendet worden. Die Software hat rund 50 Mannstunden gekostet. Hierbei gabs einige Optimierungsschwierigkeiten mit OpenGL in Verbindung mit Processing.
 
 \chapter{Konzepte mit Emitting Cubes}
 \section{''Snake-around-the-Edge''}
@@ -120,9 +160,23 @@ Daher ist geplant, dass beliebige Inhalte - also vom Betreiber aus vorgebbar -
 auf den restlichen Würfelflächen angezeigt, oder über Spielflächen mit einer gewissen Transparenz herübergelegt werden können.
 Damit wird es möglich, dass der Betreiber Werbung schaltet oder die aktuellen Wartenummern auf allen Flächen des Würfels sichtbar sind.
 
-\section{Perspektivlosigkeit}
-Die Würfel mti Kamerabildern aus verschiedeneen Perspektiven in die man sich reinfinden muss 
+\section{Perspektiv-Buzzer}
 
+\subsection{Ausgangspunkt Intention}
+Eine Idee war es ein Spiel zu entwickeln was so einfach ist, dass es keine Erklärung brauch. Die Spieler sollten von selbst auf die Regeln kommen und das Spiel entdecken.
+Hierbei sollen die Spieler abwechselnd die Buzzer betätigen um im Spiel voranzukommen. Die Folge der Bazzer-Drücke sollte auf den Cubes angezeigt werden sowie die erreichten Spielzüge in Folge. Im Laufe des Spiels verkürzen sich die Intervalle zwischen den Bazzer-Hits und es wird schwieriger mitzukommen. Der besondere Faktor kommt in der Darstellung der Bazzer auf den Cubes. Neben/unter den Bazzer müssen Kameras installiert sein, die eine Aufnahmen aus der Ameisenperspektive machen, d.h. wenn keine Spieler im Bild ist und direkt drauf guckt, Zeigt jede Kamera nur die Decke, und ist somit nicht unterscheidbar. Erst wenn ein Spieler ins Bild tritt wird der nächste Spielzug ersichtlich. Dadurch entdeckt der Spieler ziemlich schnell, wie das Spiel gespielt werden muss. Die Intention ist es, dass irgendwann mehr Spieler an dem Spiel beteiligt werden da ein Spieler zwischen den Buzzern hin und her laufen muss, nur dann kann das Spiel länger gespielt werden.
+
+\subsection{Idee und Aufbau}
+\includegraphics[width=0.5\textwidth]{./perspektiv}\\[0.3cm]   
+\\
+Vor 3 Würfeln sollen je 2x2 Buzzer-Paare im Raum stehen. Der Raum braucht viel Fläche und solle möglichst eine einheitlich weisse Decke besitzen. Die Würfel werden von der gegenüberliegenden Wand mit einem Beamer angestrahlt. Dabei werden 7 Flächen angestrahlt, 3 von dem mittleren Würfel und jeweils 2 von den seitlichen Würfeln. Die Buzzer haben jeweils eine Kamera die nach oben gerichtet ist und stehen auf hüfthohen Podesten.
+
+\subsection{Das Spiel}
+Ziel des Spiels ist es 2 Buzzer hintereinander in der vorgegebenen Zeit zu drücken. Hierfür wird auf den unteren Flächen des linken und rechten Würfels das Bild der Buzzer-Kamera eingeblendet welcher als nächstes gedrückt werden muss, die oberen Flächen zeigen einen Countdown, wieviel Zeit noch übrig ist den Buzzer zu drücken, bis das Spiel abgebrochen wird.  Auf der linken und rechten Fläche des mittleren Würfels wird immer jeweilige nächste Buzzer gezeigt, der in der nächsten Runde gedrückt werden muss. Die Obere Fläche zeigt die Zahl der erfolgreich abgeschlossenen Runden
+Jede Runde begint also damit das die Kamerabilder der Flächen die als nächsten gedrückt werden müssen vom den linken und rechten Seiten des mittleren Würfel auf den linken bzw. rechten würfel springen und ein Countdown auf diesen würfeln angezeigt wird. Während diese Countdowns hat man die Möglichkeit den passenden Buzzer zu suchen um ihn zu drücken und eine neue Runde zu beginnen. Dabei ist wird der Countdown von Runde zu runde leicht verringert. Schnell hat man nur dir Möglichkeit das Spiel zu spielen, wenn man sich zu mehreren zusammen tut und an die Buzzer in die Kamera stellt  .
+
+\subsection{Umsetztung}
+Die Würfel sind wie schon im ersten Kapitel beschrieben gebaut und die Software dafür leicht zu modifizieren. Mit dem Plugin Surfacemapper, kann 
 \end{document}
 
 
