@@ -77,8 +77,6 @@ Wir wollten einmal mit der Technik des Projektion-Mappings arbeiten und sie eins
 Im Rahmen unserer Silvesterfeier 2012/13 wollte wir eine ansprechendes Ambiente schaffen. Hierbei wollten wir der Dekoration unseren Touch geben und entschieden uns was eigenes zu bauen. Da in der Küche schon ein Beamer (FullHD) installiert ist wollten wir ihn in das Partykonzept einbinden. Somit war es nur ein kleiner Schritt zu den Würfeln. Grundidee war es Große Würfel zu bauen, die leicht schräg an die Decke montiert werden. Dadurch bietet jeder Würfel 3 Projektionsflächen die verschieden genutzt werden können. Am Ende waren es 3 Würfel mit insgesamt 9 Projektionsflächen. Dazu wurde eine Software geschrieben in Processing um die Flächen anzusteuern. Diese Flächen wurden während der gesamten Party angestrahlt. 2 davon zeigten Effekte , eine FFT am Line-Out sowie eine Lavalampe. Auf 3 zusammenhängenden Flächen wurde eine Countdown gezeigt, mit der Zeit bis zum Jahreswechsel, Auf den 4 größten Flächen wurden Bilder eingeblendet, die im Laufe des Abends geschossen wurden von der Party und von den Gästen. Da man bei solchen Partys nie mitbekommt wann geklingelt wurde, erweiterten wir die Software, mit einer WebCam und einem Tool zur Bewegungsdetektion an unserer Türklingel. Diese leuchtet immer wenn geklingelt wurde.  Als kleines Gimmick zeigten die Würfel mit einer kurzen Einblendung einer großen Glocke dann an, ob jemand geklingelt hat.
 
 
-\newpage
-
 \section{Aufbau und Techniken}
 
 \subsection{Die Würfel}
@@ -106,8 +104,6 @@ Um die Würfel anzusteuern wurde die Processing Bibliothek Surfacemapper verwend
 Die Bilder wurden ständig gewechselt. Neue Bilder die über eine Smartphone aufgenommen wurden, sind per DropBox in das System gekommen und wurden als nächstes angezeigt, ansonsten wurden zyklisch neue Bilder eingefadet. Zu große Bilder, wurden über die Flächen langsam geschoben. 
 Der Countdown in der Mitte wurde nach 00 Uhr auf die Uhrzeit umgestellt. Links oben wurde eine FFT- in Waveform mit der aktuellen Musik angezeigt, rechts oben ein Effekt.
 Wie schon erwähnt wurde auf den Würfeln angezeigt wenn die Türklingel betätigt wurde. Dafür nahm eine WebCam die in der Nähe der Türklingel installiert wurde die Meldeleuchte auf, und löste auf dem Hauptsystem einen Trigger aus.
-
-\newpage
 
 \subsection{Aufwandsabschätzung}
 Der Bau der Würfelt hat um die 30 Mannstunden in Anspruch genommen. Dabei ist besonders viel Zeit für Bekleben und das Ausrichten aufgewendet worden. Die Software hat rund 50 Mannstunden gekostet. Hierbei gabs einige Optimierungsschwierigkeiten mit OpenGL in Verbindung mit Processing.
@@ -160,7 +156,7 @@ Daher ist geplant, dass beliebige Inhalte - also vom Betreiber aus vorgebbar -
 auf den restlichen Würfelflächen angezeigt, oder über Spielflächen mit einer gewissen Transparenz herübergelegt werden können.
 Damit wird es möglich, dass der Betreiber Werbung schaltet oder die aktuellen Wartenummern auf allen Flächen des Würfels sichtbar sind.
 
-\section{Perspektiv-Buzzer}
+\section{Perspektive-Buzzer}
 
 \subsection{Ausgangspunkt Intention}
 Eine Idee war es ein Spiel zu entwickeln was so einfach ist, dass es keine Erklärung brauch. Die Spieler sollten von selbst auf die Regeln kommen und das Spiel entdecken.
@@ -172,11 +168,16 @@ Hierbei sollen die Spieler abwechselnd die Buzzer betätigen um im Spiel voranzu
 Vor 3 Würfeln sollen je 2x2 Buzzer-Paare im Raum stehen. Der Raum braucht viel Fläche und solle möglichst eine einheitlich weisse Decke besitzen. Die Würfel werden von der gegenüberliegenden Wand mit einem Beamer angestrahlt. Dabei werden 7 Flächen angestrahlt, 3 von dem mittleren Würfel und jeweils 2 von den seitlichen Würfeln. Die Buzzer haben jeweils eine Kamera die nach oben gerichtet ist und stehen auf hüfthohen Podesten.
 
 \subsection{Das Spiel}
-Ziel des Spiels ist es 2 Buzzer hintereinander in der vorgegebenen Zeit zu drücken. Hierfür wird auf den unteren Flächen des linken und rechten Würfels das Bild der Buzzer-Kamera eingeblendet welcher als nächstes gedrückt werden muss, die oberen Flächen zeigen einen Countdown, wieviel Zeit noch übrig ist den Buzzer zu drücken, bis das Spiel abgebrochen wird.  Auf der linken und rechten Fläche des mittleren Würfels wird immer jeweilige nächste Buzzer gezeigt, der in der nächsten Runde gedrückt werden muss. Die Obere Fläche zeigt die Zahl der erfolgreich abgeschlossenen Runden
-Jede Runde begint also damit das die Kamerabilder der Flächen die als nächsten gedrückt werden müssen vom den linken und rechten Seiten des mittleren Würfel auf den linken bzw. rechten würfel springen und ein Countdown auf diesen würfeln angezeigt wird. Während diese Countdowns hat man die Möglichkeit den passenden Buzzer zu suchen um ihn zu drücken und eine neue Runde zu beginnen. Dabei ist wird der Countdown von Runde zu runde leicht verringert. Schnell hat man nur dir Möglichkeit das Spiel zu spielen, wenn man sich zu mehreren zusammen tut und an die Buzzer in die Kamera stellt  .
+Ziel des Spiels ist es 2 Buzzer hintereinander in der vorgegebenen Zeit zu drücken. Hierfür wird auf den unteren Flächen des linken und rechten Würfels das Bild der Buzzer-Kamera eingeblendet welcher als nächstes gedrückt werden muss, die oberen Flächen zeigen einen Countdown, wieviel Zeit noch übrig ist den Buzzer zu drücken, bis das Spiel abgebrochen wird.  Auf der linken und rechten Fläche des mittleren Würfels wird immer jeweilige nächste Buzzer gezeigt, der in der nächsten Runde gedrückt werden muss. Die Obere Fläche zeigt die Zahl der erfolgreich abgeschlossenen Runden. 
+Jede Runde begint also damit das die Kamerabilder der Flächen die als nächsten gedrückt werden müssen vom den linken und rechten Seiten des mittleren Würfel auf den linken bzw. rechten würfel springen und ein Countdown auf diesen würfeln angezeigt wird. Während diese Countdowns hat man die Möglichkeit die passenden Buzzer zu suchen um ihn zu drücken und eine neue Runde zu beginnen. Es müssen immer 2 Buzzer pro Runde gedrückt werden. Sobald ein richtiger Buzzer gedrückt wird, wird eine Momentaufnahme der Kamera gezeigt und der Countdown für den jeweiligen Würfel gestoppt. Der ander Countdown für den 2. Buzzer läuft weiter und muss vor Ablauf gestoppt werde. Dabei wird der Countdown von Runde zu Runde leicht verringert. Schnell hat man nur dir Möglichkeit das Spiel zu spielen, wenn man sich zu mehreren zusammen tut und an die Buzzer in die Kamera stellt.
 
 \subsection{Umsetztung}
-Die Würfel sind wie schon im ersten Kapitel beschrieben gebaut und die Software dafür leicht zu modifizieren. Mit dem Plugin Surfacemapper, kann 
+Die Würfel sind wie schon im ersten Kapitel beschrieben gebaut und die Software dafür leicht zu modifizieren. Die Buzzer müssen hüfthoch auf kleinen Podesten im Raum verteilt sein. Dabei sollen 2 möglichst nah beeinander stehen um die von einer Person bedient zu werden. Die Kameras in den Buzzern sind an die Decke gerichtet und senden ihr Bild an das System mit der Projektionssoftware. Über ein Arduino-Board können die genutzten Buzzer und die Projektionssoftware kommunizieren.
+
+Für die Software wird weiterhin Java und Processing genutzt mit OpenGL und dem Plugin Surfacemapper.
+Mit dem Plugin Surfacemapper, können auch Kameraaufnahmen auf die Projektionsflächen geworfen werden.
+
+
 \end{document}
 
 
